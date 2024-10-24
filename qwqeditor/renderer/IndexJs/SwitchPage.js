@@ -1,10 +1,10 @@
 
 
-
-
 document.addEventListener("DOMContentLoaded", () =>{
     const links = document.querySelectorAll(".sidebar a");
     const mainContent = document.getElementById("main-content");
+
+    console.log("页面已加载");
 
     links.forEach(link =>{
         link.addEventListener("click", (event) => {
@@ -27,5 +27,29 @@ document.addEventListener("DOMContentLoaded", () =>{
                 });
         });
     });
+
+    const minimizeBtn = document.getElementById("minimize-btn");
+    minimizeBtn.addEventListener("click", () => {
+        window.electronAPI.minimizeWindow();
+    });
+
+    const maximizeBtn = document.getElementById("maximize-btn");
+    maximizeBtn.addEventListener("click", () => {
+        window.electronAPI.maximizeWindow();
+        console.log("maximized");
+    });
+
+    const closeBnt = document.getElementById("close-btn");
+    closeBnt.addEventListener("click",  ()=> {
+        window.electronAPI.closeWindow();
+    });
+
 });
+
+
+
+
+
+
+
 

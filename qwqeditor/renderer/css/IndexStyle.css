@@ -4,7 +4,7 @@ body{
     padding: 0;
 }
 
-.titlebar{
+.title-bar{
     width: 100%;
     height: 30px;
     background-color: rgba(0, 0, 0, 0.5);
@@ -12,6 +12,22 @@ body{
     text-align: center;
     line-height: 30px;
     -webkit-app-region: drag;
+    position: fixed;
+}
+
+.title-bar button{
+    -webkit-app-region: no-drag;
+    background: #444;
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    margin-left: 5px;
+    cursor: pointer;
+}
+
+.title-bar button:hover{
+    background: #555;
+    transition:1s;
 }
 
 .container{
@@ -20,7 +36,6 @@ body{
 }
 
 .sidebar{
-    z-index: 10000;
     width: 120px;
     background-color: #333;
     color: white;
