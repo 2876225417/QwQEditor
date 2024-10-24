@@ -1,5 +1,0 @@
-
-
-
-
-window.objRender = { key: "value" }

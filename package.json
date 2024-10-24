@@ -2,7 +2,7 @@
   "name": "qwqeditor",
   "version": "1.0.0",
   "description": "ppQwQqq Editor",
-  "main": "./qwqeditor/src/main.js",
+  "main": "qwqeditor/main/main.js",
   "scripts": {
     "start": "electron-forge start",
     "test": "echo \"Error: no test specified\" && exit 1",
