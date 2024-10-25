@@ -39,6 +39,14 @@ document.addEventListener("DOMContentLoaded", () =>{
         console.log("maximized");
     });
 
+    window.electronAPI.onMaximized(() => {
+        maximizeBtn.textContent = "❐";
+    })
+
+    window.electronAPI.onUnMaximized(() => {
+        maximizeBtn.textContent = "□";
+    })
+
     const closeBnt = document.getElementById("close-btn");
     closeBnt.addEventListener("click",  ()=> {
         window.electronAPI.closeWindow();

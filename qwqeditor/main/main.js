@@ -23,35 +23,48 @@ function createWindows(){
         icon: path.join(__dirname, "../assets/qwqeditor.png")
     });
 
-    mainWin.webContents.openDevTools();
+    mainWin.on("maximize", () => {
+        mainWin.webContents.send("window-maximized");
+    });
 
-    mainWin.loadFile(path.join(__dirname, "../renderer/index.html"));
+    mainWin.on("unmaximize", () =>{
+        mainWin.webContents.send("window-unmaximized");
+    });
 
     mainWin.on("closed", () => {
         mainWin = null;
-    })
+    });
 
-    globalShortcut.register("F12", () => {
-        mainWin.webContents.toggleDevTools();
-    })
+    mainWin.loadFile(path.join(__dirname, "../renderer/index.html"));
+
+
 }
 
+// 注册快捷键
+// ctrl + 1 -> 开启开发者面板
 app.whenReady().then(() => {
-    createWindows();
-
-    globalShortcut.register("F12", () => {
+    globalShortcut.register("Control + 1", () => {
         mainWin.webContents.toggleDevTools();
     });
-});
+}).then(createWindows);
 
+// 界面关闭时，注销快捷键
 app.on("will-quit", () => {
     globalShortcut.unregisterAll();
 })
 
+app.on("window-all-closed", () =>{
+    if(process.platform !== "darwin"){
+        app.quit();
+    }
+})
+
+// 最小化窗口
 ipcMain.on("minimize-window", () => {
     mainWin.minimize();
 });
 
+// 最大化窗口
 ipcMain.on("maximize-window", () => {
     if (mainWin.isMaximized()) {
         mainWin.unmaximize();
@@ -60,12 +73,7 @@ ipcMain.on("maximize-window", () => {
     }
 });
 
+// 关闭窗口
 ipcMain.on("close-window", () => {
     mainWin.close();
-})
-
-app.on("window-all-closed", () =>{
-    if(process.platform !== "darwin"){
-        app.quit();
-    }
-})
+});

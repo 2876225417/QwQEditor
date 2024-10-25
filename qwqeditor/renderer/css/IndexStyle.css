@@ -6,13 +6,17 @@ body{
 
 .title-bar{
     width: 100%;
-    height: 30px;
-    background-color: rgba(0, 0, 0, 0.5);
+    height: 40px;
     color: white;
-    text-align: center;
+    text-align: right;
     line-height: 30px;
     -webkit-app-region: drag;
     position: fixed;
+    top: 0;
+    padding-right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
 }
 
 .title-bar button{
@@ -20,15 +24,38 @@ body{
     background: #444;
     border: none;
     color: white;
-    padding: 5px 10px;
-    margin-left: 5px;
+    font-size: 14px;
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
     cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.3s ease, transform 0.2s ease;
 }
 
 .title-bar button:hover{
-    background: #555;
-    transition:1s;
+    transform: scale(1.2);
+    transition: background 0.3s ease, transform 0.2s ease;
 }
+
+#minimize-btn:hover{
+    background: linear-gradient(145deg, #3a8ec0, #285273);
+}
+
+#maximize-btn:hover{
+    background: linear-gradient(145deg, #4caf50, #347a35);
+}
+
+#close-btn:hover{
+    background: linear-gradient(145deg, #e74c3c, #b03e2e);
+}
+
+.title-bar button:active{
+    transform: scale(1.05);
+    background-color: #333;
+    filter: brightness(1.2);
+}
+
 
 .container{
     display: flex;

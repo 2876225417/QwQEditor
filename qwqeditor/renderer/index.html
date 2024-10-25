@@ -3,30 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <title>Electron</title>
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';"/>
     <link rel="stylesheet" href="css/IndexStyle.css">
 </head>
 <body>
-<div class="title-bar">
-    <button id="minimize-btn">_</button>
-    <button id="maximize-btn">[]</button>
-    <button id="close-btn">X</button>
-</div>
-
-<div class="container">
-    <nav class="sidebar">
-        <ul>
-            <li><a href="#home" data-page="subIndex/home.html">Home</a></li>
-            <li><a href="#about" data-page="subIndex/about.html">about</a></li>
-            <li><a href="#service" data-page="subIndex/service.html">service</a></li>
-            <li><a href="#contact" data-page="subIndex/contact.html">contact</a></li>
-        </ul>
-    </nav>
-
-    <div id="main-content">
-        <h1>Welcome</h1>
-        <p> Select a section from sidebar </p>
+<div>
+    <div class="title-bar">
+        <button id="minimize-btn">—</button>
+        <button id="maximize-btn">□</button>
+        <button id="close-btn">✕</button>
     </div>
 
+    <div class="container">
+        <nav class="sidebar">
+            <ul>
+                <li><a href="#home" data-page="subIndex/home.html">Home</a></li>
+                <li><a href="#about" data-page="subIndex/about.html">about</a></li>
+                <li><a href="#service" data-page="subIndex/service.html">service</a></li>
+                <li><a href="#contact" data-page="subIndex/contact.html">contact</a></li>
+            </ul>
+        </nav>
+
+        <div id="main-content">
+            <h1>Welcome</h1>
+            <p> Select a section from sidebar </p>
+        </div>
+
+    </div>
 </div>
 <script src="IndexJs/SwitchPage.js"></script>
 
