@@ -1,6 +1,6 @@
-
-<html>
-<head>s
+<!DOCTYPE html>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
     <title>Electron</title>
     <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';"/>
@@ -18,20 +18,30 @@
         <nav class="sidebar">
             <ul>
                 <li><a href="#home" data-page="subIndex/home.html">Home</a></li>
-                <li><a href="#about" data-page="subIndex/about.html">about</a></li>
-                <li><a href="#service" data-page="subIndex/service.html">service</a></li>
-                <li><a href="#contact" data-page="subIndex/contact.html">contact</a></li>
+                <li><a href="#about" data-page="subIndex/about.html">About</a></li>
+                <li><a href="#service" data-page="subIndex/service.html">Service</a></li>
+                <li><a href="#contact" data-page="subIndex/contact.html">Contact</a></li>
+                <li><a href="#PDFReader" data-page="subIndex/PDFReader.html">PDF Reader</a></li>
             </ul>
         </nav>
 
-        <div id="main-content">
-            <h1>Welcome</h1>
-            <p> Select a section from sidebar </p>
-        </div>
-
+        <!-- 用 iframe 替换主内容区域 -->
+        <iframe id="contentFrame" src="subIndex/home.html" style="width: 100%; height: 100%; border: none;"></iframe>
     </div>
 </div>
-<script src="IndexJs/SwitchPage.js"></script>
+<script src="IndexJs/PageSwitch.js"></script>
 
+<script>
+    const contentFrame = document.getElementById("contentFrame");
+
+    // 监听 iframe 发来的消息
+    window.addEventListener("message", async (event) => {
+        if (event.data === "openPDFDialog") {
+            const filePath = await window.electronAPI.openPDFDialog();
+            // 将文件路径发送回 iframe
+            contentFrame.contentWindow.postMessage({ type: "pdfSelected", filePath }, "*");
+        }
+    });
+</script>
 </body>
 </html>

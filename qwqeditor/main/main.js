@@ -3,11 +3,12 @@
 const { app,
     BrowserWindow,
     ipcMain,
-    globalShortcut }
+    globalShortcut ,
+    dialog}
     = require("electron");
 
 const path = require("path")
-
+const fs = require('fs');
 let mainWin;
 
 function createWindows(){
@@ -39,6 +40,23 @@ function createWindows(){
 
 
 }
+
+console.log('Current working directory:', __dirname);
+
+// 打开文件对话框并返回文件路径
+// 处理文件对话框
+ipcMain.handle('dialog:openPDF', async () => {
+    const { canceled, filePaths } = await dialog.showOpenDialog({
+        properties: ['openFile'],
+        filters: [{ name: 'PDF Files', extensions: ['pdf'] }],
+    });
+    if (canceled) {
+        return null;
+    } else {
+        return filePaths[0];
+    }
+});
+
 
 // 注册快捷键
 // ctrl + 1 -> 开启开发者面板

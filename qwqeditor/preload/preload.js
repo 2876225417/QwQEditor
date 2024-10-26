@@ -6,5 +6,7 @@ contextBridge.exposeInMainWorld("electronAPI",{
     closeWindow: () => ipcRenderer.send("close-window"),
     onMaximized: (callback) => ipcRenderer.on("window-maximized", callback),
     onUnMaximized: (callback) => ipcRenderer.on("window-unmaximized", callback),
-})
+    openPDFDialog: () => ipcRenderer.invoke('dialog:openPDF')
+});
+
 
