@@ -1,6 +1,6 @@
 {
   "name": "qwqeditor",
-  "version": "1.0.3",
+  "version": "1.0.2",
   "description": "ppQwQqq Editor",
   "main": "qwqeditor/main/main.js",
   "scripts": {
@@ -24,13 +24,10 @@
     "@electron/fuses": "^1.8.0",
     "cross-env": "^7.0.3",
     "electron": "^33.0.1",
-    "electron-reload": "^2.0.0-alpha.1",
-    "electronmon": "^2.0.3"
+    "electron-reload": "^2.0.0-alpha.1"
   },
   "dependencies": {
     "electron-squirrel-startup": "^1.0.1",
-    "electron-store": "^10.0.0",
-    "mica-electron": "^1.5.16",
     "node-addon-api": "^8.2.1",
     "pdfjs-dist": "^4.7.76"
   }

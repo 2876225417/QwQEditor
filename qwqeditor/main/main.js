@@ -4,7 +4,8 @@ const { app,
     BrowserWindow,
     ipcMain,
     globalShortcut ,
-    dialog}
+    dialog,
+    nativeTheme}
     = require("electron");
 
 const path = require("path")
@@ -12,11 +13,17 @@ const fs = require('fs');
 let mainWin;
 let pdfWindow;
 
+
+
+
+
 function createWindows(){
     mainWin = new BrowserWindow({
         width: 1200,
         height: 800,
         frame: false, // 禁用 Electron 默认框架
+        // transparent: true,
+        backgroundMaterial: "acrylic",
         webPreferences:{
             preload: path.join(__dirname, "../preload/preload.js"),
             nodeIntegration: false,
@@ -41,10 +48,22 @@ function createWindows(){
 
     // pdfWindow.loadFile(path.join(__dirname, "../pdfjs/web/viewer.html"));
 
+    mainWin.webContents.on("did-finish-load", () => {
+        mainWin.webContents.send("initial-theme", nativeTheme.shouldUseDarkColors);
+    })
 
 }
 
 console.log('Current working directory:', __dirname);
+
+
+ipcMain.on("toggle-dark-mode", (event) => {
+    nativeTheme.themeSource = nativeTheme.shouldUseDarkColors ? "light" : "dark";
+    // 以下用来更新的特定的部分
+    event.sender.send("theme-updated", nativeTheme.shouldUseDarkColors);
+});
+
+
 
 // 打开文件对话框并返回文件路径
 // 处理文件对话框
