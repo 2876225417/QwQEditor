@@ -10,6 +10,7 @@ const { app,
 const path = require("path")
 const fs = require('fs');
 let mainWin;
+let pdfWindow;
 
 function createWindows(){
     mainWin = new BrowserWindow({
@@ -37,6 +38,8 @@ function createWindows(){
     });
 
     mainWin.loadFile(path.join(__dirname, "../renderer/index.html"));
+
+    // pdfWindow.loadFile(path.join(__dirname, "../pdfjs/web/viewer.html"));
 
 
 }
