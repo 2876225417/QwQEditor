@@ -10,4 +10,7 @@ find_path(NODE_INCLUDE_DIR node/node.h)
 find_library(NODE_LIBRARY node)
 
 
-add_sub
+add_subdirectory(node_modules/node-addon-api EXCLUDE_FROM_ALL)
+
+add_library(mymodule SHARED main/mymodule.cpp)
+

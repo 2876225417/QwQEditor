@@ -1,3 +1,6 @@
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,41 +8,119 @@
     <title>Electron</title>
     <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';"/>
     <link rel="stylesheet" href="css/IndexStyle.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
 <div>
+    <!--标题栏-->
     <div class="title-bar">
-        <button id="minimize-btn">—</button>
-        <button id="maximize-btn">□</button>
-        <button id="close-btn">✕</button>
+        <img src="../assets/qwqeditor.png" alt="App Icon" class="title-icon"/>
+        <div class="title-text">ppQwQqq</div>
+        <div class="title-bar-buttons">
+            <button id="minimize-btn">—</button>
+            <button id="maximize-btn">□</button>
+            <button id="close-btn">✕</button>
+        </div>
     </div>
 
     <div class="container">
-        <nav class="sidebar">
-            <ul>
-                <li><a href="#home" data-page="subIndex/home.html">Home</a></li>
-                <li><a href="#about" data-page="subIndex/about.html">About</a></li>
-                <li><a href="#service" data-page="subIndex/service.html">Service</a></li>
-                <li><a href="#contact" data-page="subIndex/contact.html">Contact</a></li>
-                <li><a href="#PDFReader" data-page="subIndex/PDFReader.html">PDF Reader</a></li>
-            </ul>
-        </nav>
-
-        <!-- 用 iframe 替换主内容区域 -->
-        <iframe id="contentFrame" src="subIndex/home.html" style="width: 100%; height: 100%; border: none;"></iframe>
+        <div class="sidebar-container">
+            <!--切换导航栏可见按钮-->
+            <button id="toggleButton" aria-label="Toggle Sidebar">
+                <i class="fas fa-angle-left"></i>
+            </button>
+            <!--导航栏内容-->
+            <nav class="sidebar">
+                <ul>
+                    <li><a href="#home" data-page="subIndex/home.html"><i class="fas fa-home"></i><span>Home</span></a></li>
+                    <li><a href="#about" data-page="subIndex/about.html"><i class="fas fa-user"></i><span>About</span></a></li>
+                    <li class="has-submenu">
+                        <a href="#service" data-page="subIndex/service.html">
+                            <i class="fas fa-cogs"></i><span>Service</span>
+                            <i class="arrow-icon fas fa-chevron-down"></i>
+                        </a>
+                        <!-- 子选项 -->
+                        <ul class="submenu">
+                            <li><a href="#webDev" data-page="SubIndex/webDev.html">Electron</a></li>
+                            <li><a href="#appDev" data-page="SubIndex/appDev.html">Electron</a></li>
+                            <li><a href="#design" data-page="SubIndex/designDev.html">Electron</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#contact" data-page="subIndex/contact.html"><i class="fas fa-envelope"></i><span>Contact</span></a></li>
+                    <li><a href="#PDFReader" data-page="subIndex/pdfReader.html"><i class="fas fa-file-pdf"></i><span>PDFReader</span></a></li>
+                </ul>
+            </nav>
+        </div>
+        <!--iframe-->
+       <iframe id="contentFrame" src="subIndex/home.html" style="width: 100%; height: 100%; border: none;"></iframe>
     </div>
 </div>
 <script src="IndexJs/PageSwitch.js"></script>
 
 <script>
-    const contentFrame = document.getElementById("contentFrame");
 
-    // 监听 iframe 发来的消息
-    window.addEventListener("message", async (event) => {
-        if (event.data === "openPDFDialog") {
+    const navLinks = document.querySelectorAll(".sidebar ul li a");
+
+    navLinks.forEach(link => {
+        link.addEventListener("click", function(event){
+            navLinks.forEach(navLink => navLink.classList.remove("active"));
+
+            this.classList.add("active");
+        })
+    })
+
+    document.querySelectorAll(".has-submenu > a").forEach(parent => {
+        parent.addEventListener("click", function(event){
+            event.preventDefault();
+
+            const listItem = this.parentElement;
+            const submenu = listItem.querySelector(".submenu");
+
+            if(submenu){
+                if(document.querySelector(".sidebar").classList.contains("hidden")){
+                    submenu.style.display = "none";
+                }else{
+                    submenu.style.display = submenu.style.display === "block" ? "none" : "block";
+                    submenu.style.position = "relative";
+                    submenu.style.left = "0";
+                }
+                listItem.classList.toggle("open");
+            }
+        });
+    });
+
+    document.getElementById("toggleButton").addEventListener("click", function() {
+        const sidebar = document.querySelector(".sidebar");
+        const toggleButton = document.getElementById("toggleButton");
+        const submenu = document.querySelector(".submenu");
+        const hasSubmenu = document.querySelector(".has-submenu");
+        sidebar.classList.toggle("hidden");
+        if(sidebar.classList.contains("hidden")){
+            document.getElementById("toggleButton").style.left = "60px";
+            document.getElementById("toggleButton").innerHTML = '<i class="fas fa-angle-right"></i>';
+            submenu.style.display = "none";
+
+            if(hasSubmenu.classList.contains("open")){
+                hasSubmenu.classList.remove("open");
+            }
+        }else{
+            document.getElementById("toggleButton").style.left = "180px";
+            document.getElementById("toggleButton").innerHTML = '<i class="fas fa-angle-left"></i>';
+            if(hasSubmenu.classList.contains("open")){
+                hasSubmenu.classList.remove("open");
+            }
+        }
+    });
+
+
+    const contentFrame = document.getElementById("contentFrame");
+    <!--监听 iframe 的消息-->
+    window.addEventListener("message", async(event) => {
+        if(event.data === "openPDFDialog"){
+            <!--调用暴露的接口-->
             const filePath = await window.electronAPI.openPDFDialog();
-            // 将文件路径发送回 iframe
-            contentFrame.contentWindow.postMessage({ type: "pdfSelected", filePath }, "*");
+            <!-- 将文件路径发送回 iframe 子页面 pdfReader.html type: pdfSelected value: filePath -->
+            contentFrame.contentWindow.postMessage({ type: "pdfSelected", filePath }, "*")
         }
     });
 </script>

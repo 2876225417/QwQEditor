@@ -1,25 +1,52 @@
-
-body{
+/* 全局基础样式 */
+body {
     margin: 0;
     padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f6f8;
+    color: #333;
+    overflow: hidden;
 }
 
-.title-bar{
+/* 标题栏部分 */
+
+/* 标题栏样式 */
+.title-bar {
     width: 100%;
     height: 40px;
+    background: linear-gradient(145deg, #3c3f41, #2b2c2e); /* 现代渐变背景 */
     color: white;
-    text-align: right;
-    line-height: 30px;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     -webkit-app-region: drag;
     position: fixed;
     top: 0;
-    padding-right: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
+    z-index: 1000;
 }
 
-.title-bar button{
+.title-icon {
+    height: 24px;
+    width: 24px;
+    margin-right: 10px;
+    -webkit-app-region: no-drag; /* 让图标可拖动 */
+}
+
+.title-text {
+    flex-grow: 1; /* 占据可用空间居中 */
+    text-align: center;
+    font-weight: bold;
+    font-size: 16px;
+    -webkit-app-region: drag; /* 标题可拖动 */
+}
+
+.title-buttons {
+    display: flex;
+    gap: 8px; /* 按钮间的间隔 */
+}
+
+.title-bar button {
     -webkit-app-region: no-drag;
     background: #444;
     border: none;
@@ -27,100 +54,63 @@ body{
     font-size: 14px;
     width: 30px;
     height: 30px;
-    margin-right: 10px;
     cursor: pointer;
     border-radius: 4px;
     transition: background 0.3s ease, transform 0.2s ease;
 }
 
-.title-bar button:hover{
-    transform: scale(1.2);
-    transition: background 0.3s ease, transform 0.2s ease;
+.title-bar-buttons{
+    padding-right: 15px;
 }
 
-#minimize-btn:hover{
-    background: linear-gradient(145deg, #3a8ec0, #285273);
+.title-bar button:hover {
+    transform: scale(1.1);
 }
 
-#maximize-btn:hover{
-    background: linear-gradient(145deg, #4caf50, #347a35);
+#minimize-btn:hover {
+    background: #3a8ec0;
 }
 
-#close-btn:hover{
-    background: linear-gradient(145deg, #e74c3c, #b03e2e);
+#maximize-btn:hover {
+    background: #4caf50;
 }
 
-.title-bar button:active{
+#close-btn:hover {
+    background: #e74c3c;
+}
+
+.title-bar button:active {
     transform: scale(1.05);
     background-color: #333;
     filter: brightness(1.2);
 }
 
 
-.container{
-    display: flex;
-    height: 100%;
-}
-
-.sidebar{
-    width: 120px;
-    background-color: #333;
-    color: white;
-    padding: 15px;
-    box-sizing: border-box;
-}
-
-.sidebar ul{
-    list-style-type: none;
-    padding: 0;
-}
-
-.sidebar li{
-    margin: 15px 0;
-}
-
-.sidebar a{
-    color: white;
-    text-decoration: none;
-    font-size: 18px;
-    display: block;
-}
-
-.sidebar a:hover{
-    background-color: #575757;
-    padding-left: 10px;
-    transition: 0.3s;
-}
-
-
-/* 设置容器整体样式 */
+/* 内容布局容器 */
 .container {
     display: flex;
-    height: calc(100vh - 40px); /* 减去顶部栏的高度 */
-    background-color: #f4f4f4;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    margin: 10px;
-    border: 1px solid #ddd;
+    height: 100vh;
+    padding-top: 40px; /* 为标题栏留出空间 */
+    transition: all 0.3s ease;
 }
 
 /* 侧边栏样式 */
 .sidebar {
-    width: 250px;
-    background-color: #2c3e50;
-    color: #ecf0f1;
-    font-family: Arial, sans-serif;
-    display: flex;
-    flex-direction: column;
-    padding-top: 20px;
-    border-right: 1px solid #ddd;
+    height: calc(100% - 40px);
+    -webkit-app-region: no-drag;
+    width: 200px;
+    background: rgba(51, 51, 51, 0.6); /* 半透明背景 */
+    color: white;
+    padding: 15px;
+    box-sizing: border-box;
+    backdrop-filter: blur(10px); /* Mica毛玻璃效果 */
+    transition: width 0.3s ease-in, padding 0.3s ease-in;
+    overflow: hidden;
 }
 
 .sidebar ul {
     list-style-type: none;
     padding: 0;
-    margin: 0;
 }
 
 .sidebar ul li {
@@ -129,24 +119,165 @@ body{
 }
 
 .sidebar ul li:hover {
-    background-color: #34495e;
+    background-color: rgba(52, 73, 94, 0.7);
 }
 
 .sidebar ul li a {
     color: #ecf0f1;
     text-decoration: none;
     font-weight: bold;
+    display: flex;
+    align-items: center;
+    transition: color 0.3s, transform 0.3s;
 }
 
 .sidebar ul li a.active {
+    background-color: #1abc9c;
+    color: white;
+    border-radius: 4px;
+    padding: 10px 20px;
+    display: block;
+}
+
+/* 常规选中样式 */
+.sidebar ul li a.active {
+    background-color: rgba(26, 188, 156, 0.2); /* 淡绿色背景 */
+    color: #1abc9c; /* 选中项文本颜色 */
+    border-radius: 4px;
+    padding: 5px 10px;
+    display: block;
+}
+
+/* 侧边栏隐藏时的选中样式 */
+.sidebar.hidden ul li a.active {
+    background-color: transparent; /* 保持背景透明 */
+    position: relative;
+}
+
+/* 添加选中状态的左侧条 */
+.sidebar.hidden ul li a.active::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 4px;
+    background-color: #1abc9c; /* 选中指示条颜色 */
+    border-radius: 2px;
+}
+
+
+.sidebar ul li a span {
+    opacity: 1;
+    transition: opacity 0.3s;
+}
+
+/* 隐藏状态的侧边栏 */
+.sidebar.hidden {
+    width: 80px;
+    padding: 0;
+    overflow: hidden;
+    transition: width 0.3s ease-in, padding 0.3s ease-in;
+}
+
+.sidebar.hidden ul li a span {
+    display: none;
+}
+
+.sidebar.hidden ul li a i {
+    margin-left: 10px;
+    font-size: 24px;
+    margin-right: 0px;
+    margin-top: 5px;
+    transition: font-size 0.5s ease-out;
+}
+
+/* 子菜单样式 */
+.submenu {
+    display: none;
+    padding-left: 20px;
+    list-style-type: none;
+    position: relative;
+}
+
+.sidebar.hidden .submenu {
+    position: absolute;
+    left: 80px;
+    background-color: #333;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+    z-index: 100;
+}
+
+.arrow-icon {
+    font-size: 12px;
+    margin-left: 8px;
+}
+
+.sidebar.hidden .arrow-icon {
+    display: none;
+}
+
+.has-submenu.open .arrow-icon {
+    transform: rotate(180deg);
+}
+
+.submenu li a {
+    color: #ecf0f1;
+    font-size: 14px;
+    text-decoration: none;
+    padding: 8px 0;
+    display: block;
+    transition: background 0.3s;
+}
+
+.submenu li a:hover {
+    background-color: #34495e;
+}
+
+/* 切换按钮样式 */
+#toggleButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2), 0 0 0 2px #ecf0f1;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    -webkit-app-region: no-drag;
+    position: fixed;
+    top: 60px;
+    left: 180px;
+    z-index: 10;
+    background: linear-gradient(145deg, #ffffff, #d1d9e6);
+    border: none;
+    cursor: pointer;
+    outline: none;
+    transition: left 0.3s ease-in, box-shadow 0.3s ease, background 0.3s ease;
+}
+
+#toggleButton i {
+    font-size: 20px;
+    color: #333;
+    transition: color 0.3s, transform 0.3s ease;
+}
+
+#toggleButton:hover {
+    background: linear-gradient(145deg, #e0e6ed, #ffffff);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3), 0 0 0 2px #ecf0f1;
+}
+
+#toggleButton:hover i {
     color: #1abc9c;
+    transform: scale(1.1);
 }
 
 /* 内容区域样式 */
 #contentFrame {
     flex-grow: 1;
-    padding: 20px;
-    background-color: #ffffff;
     border: none;
-    border-radius: 0 8px 8px 0;
+    width: 100%;
+    height: calc(100vh - 40px); /* 使iframe适应视口 */
+    transition: width 0.3s ease;
 }
