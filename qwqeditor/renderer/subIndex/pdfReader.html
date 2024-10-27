@@ -1,6 +1,3 @@
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,61 +6,14 @@
     <title>PDFViewer - Reader Page</title>
 </head>
 <body>
-    <h1>PDF Viewer</h1>
-    <button id="selectPDF">选择PDF</button>
-
-    <canvas id="pdfCanvas"><!--此处用来渲染pdf--></canvas>
-
-    <!-- pdf CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-    <script>
-        pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
-
-        <!--将 selectPDF 按钮触发的点击事件发送给父页面，要求打开文件对话框 FileDialog-->
-        document.getElementById("selectPDF").addEventListener("click", () => {
-            window.parent.postMessage("openPDFDialog", "*");
-        });
-
-        <!-- 接收父页面发送过来的 PDF 文件路径 -->
-        window.addEventListener("message", (event) => {
-            <!-- 检查接收类型与发送类型是否相匹配 type: pdfSelected -->
-            if(event.data.type === "pdfSelected" && event.data.filePath){
-                const filePath = event.data.filePath;
-
-                fetch(filePath)
-                    .then(response => response.arrayBuffer())
-                    .then(data => {
-                        const typedArray = new Uint8Array(data);
-
-                        pdfjsLib.getDocument(typedArray).promise.then((pdfDoc) => {
-                            console.log(`PDF loaded with ${pdfDoc.numPages} pages`);
-
-                            return pdfDoc.getPage(1);
-                        }).then((page) => {
-                            const viewport = page.getViewport({scale: 1.5});
-                            const canvas = document.getElementById("pdfCanvas");
-                            const context = canvas.getContext("2d");
-                            canvas.width = viewport.width;
-                            canvas.height = viewport.height;
-
-                            const renderContext = {
-                                canvasContext: context,
-                                viewport: viewport,
-                            };
-                            return page.render(renderContext).promise;
-                        }).then(() => {
-                            console.log("Page rendered");
-                        }).catch((error) => {
-                            console.error("Error loading PDF: ", error);
-                        })
-                    })
-                    .catch(error => console.log("Error fetching PDF:", error));
-            }
-        });
-    </script>
-
+<h1>PDF Viewer</h1>
+<!-- 直接加载 PDF.js viewer.html -->
+<iframe id="pdfViewer" src="../../pdfjs/web/viewer.html" style="width: 100%; height: calc(100vh - 40px); border: none;"></iframe>
 </body>
 
 
+<style>
+
+</style>
 
 </html>

@@ -48,18 +48,33 @@ console.log('Current working directory:', __dirname);
 
 // 打开文件对话框并返回文件路径
 // 处理文件对话框
-ipcMain.handle('dialog:openPDF', async () => {
-    const { canceled, filePaths } = await dialog.showOpenDialog({
-        properties: ['openFile'],
-        filters: [{ name: 'PDF Files', extensions: ['pdf'] }],
+// 处理文件夹选择对话框的请求
+ipcMain.handle('dialog:selectFolder', async () => {
+    const result = await dialog.showOpenDialog({
+        properties: ['openDirectory']
     });
-    if (canceled) {
-        return null;
-    } else {
-        return filePaths[0];
+
+    if (!result.canceled && result.filePaths.length > 0) {
+        const folderPath = result.filePaths[0];
+        return readDirectory(folderPath);
     }
+    return null;
 });
 
+// 递归读取目录内容
+function readDirectory(dirPath) {
+    const files = fs.readdirSync(dirPath);
+    return files.map(file => {
+        const filePath = path.join(dirPath, file);
+        const isDirectory = fs.statSync(filePath).isDirectory();
+        return {
+            name: file,
+            path: filePath,
+            isDirectory: isDirectory,
+            children: isDirectory ? readDirectory(filePath) : []
+        };
+    });
+}
 
 // 注册快捷键
 // ctrl + 1 -> 开启开发者面板

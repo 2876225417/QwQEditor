@@ -32,35 +32,95 @@
             <!--导航栏内容-->
             <nav class="sidebar">
                 <ul>
-                    <li><a href="#home" data-page="subIndex/home.html"><i class="fas fa-home"></i><span>Home</span></a></li>
-                    <li><a href="#about" data-page="subIndex/about.html"><i class="fas fa-user"></i><span>About</span></a></li>
+                    <li><a href="#home" data-page="subIndex/home.html" data-id="home"><i class="fas fa-home"></i><span>Home</span></a></li>
+                    <li><a href="#about" data-page="subIndex/about.html" data-id="about"><i class="fas fa-user"></i><span>About</span></a></li>
                     <li class="has-submenu">
-                        <a href="#service" data-page="subIndex/service.html">
+                        <a href="#service" data-page="subIndex/service.html" data-id="service">
                             <i class="fas fa-cogs"></i><span>Service</span>
                             <i class="arrow-icon fas fa-chevron-down"></i>
                         </a>
                         <!-- 子选项 -->
                         <ul class="submenu">
-                            <li><a href="#webDev" data-page="SubIndex/webDev.html">Electron</a></li>
-                            <li><a href="#appDev" data-page="SubIndex/appDev.html">Electron</a></li>
-                            <li><a href="#design" data-page="SubIndex/designDev.html">Electron</a></li>
+                            <li><a href="#webDev" data-page="SubIndex/webDev.html" data-id="webDev">Electron</a></li>
+                            <li><a href="#appDev" data-page="SubIndex/appDev.html" data-id="appDev">Electron</a></li>
+                            <li><a href="#design" data-page="SubIndex/designDev.html" data-id="design">Electron</a></li>
                         </ul>
                     </li>
-                    <li><a href="#contact" data-page="subIndex/contact.html"><i class="fas fa-envelope"></i><span>Contact</span></a></li>
-                    <li><a href="#PDFReader" data-page="../pdfjs/web/viewer.html"><i class="fas fa-file-pdf"></i><span>PDFReader</span></a></li>
+                    <li><a href="#contact" data-page="subIndex/contact.html" data-id="contact"><i class="fas fa-envelope"></i><span>Contact</span></a></li>
+                    <li><a href="#PDFReader" data-page="subIndex/pdfReader.html" data-id="PDFReader"><i class="fas fa-file-pdf"></i><span>PDFReader</span></a></li>
                 </ul>
             </nav>
         </div>
-        <!--iframe-->
-       <iframe id="contentFrame" src="subIndex/home.html" style="width: 100%; height: 100%; border: none;"></iframe>
+
+        <!--iframe容器-->
+        <div class="iframe-container"></div>
     </div>
 </div>
+
 <script src="IndexJs/PageSwitch.js"></script>
 
 <script>
 
-    const navLinks = document.querySelectorAll(".sidebar ul li a");
 
+    const iframeContainer = document.querySelector(".iframe-container");
+    const Links = document.querySelectorAll(".sidebar a");
+    const iframes = {}; // 用于存储每个 iframe
+
+    // 切换页面
+    function switchPage(id, url) {
+        // 隐藏所有 iframe
+        Object.values(iframes).forEach(iframe => iframe.style.display = "none");
+
+        // 如果 iframe 已经存在，则显示该 iframe
+        if (iframes[id]) {
+            iframes[id].style.display = "block";
+        } else {
+            // 创建新的 iframe，并加载对应页面
+            const iframe = document.createElement("iframe");
+            iframe.src = url;
+            iframe.style.width = "100%";
+            iframe.style.height = "100%";
+            iframe.style.border = "none";
+            iframe.dataset.id = id;
+
+            // 添加到容器和 iframe 集合中
+            iframeContainer.appendChild(iframe);
+            iframes[id] = iframe;
+        }
+    }
+
+    // 监听导航栏点击事件
+    Links.forEach(link => {
+        link.addEventListener("click", (event) => {
+            event.preventDefault(); // 阻止默认跳转行为
+            const id = link.getAttribute("data-id"); // 获取页面 id
+            const page = link.getAttribute("data-page"); // 获取页面 url
+            if (id && page) {
+                switchPage(id, page); // 切换页面
+            }
+        });
+    });
+
+    // 默认加载第一个页面
+    switchPage("home", "subIndex/home.html");
+
+    // 监听 iframe 的消息
+    window.addEventListener("message", async (event) => {
+        if (event.data.action === "selectFolder") {
+            // 调用 electronAPI.selectFolder 选择文件夹
+            const fileTree = await window.electronAPI.selectFolder();
+
+            // 将文件树传回给 iframe
+            const iframe = document.getElementById("i").contentWindow;
+            iframe.postMessage({ action: "displayFileTree", fileTree: fileTree }, "*");
+        }
+    });
+
+
+
+
+
+    const navLinks = document.querySelectorAll(".sidebar ul li a");
     navLinks.forEach(link => {
         link.addEventListener("click", function(event){
             navLinks.forEach(navLink => navLink.classList.remove("active"));

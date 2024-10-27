@@ -30,7 +30,7 @@ body {
     height: 24px;
     width: 24px;
     margin-right: 10px;
-    -webkit-app-region: no-drag; /* 让图标可拖动 */
+    -webkit-app-region: drag; /* 让图标可拖动 */
 }
 
 .title-text {
@@ -274,7 +274,7 @@ body {
 }
 
 /* 内容区域样式 */
-#contentFrame {
+.iframe-container {
     flex-grow: 1;
     border: none;
     width: 100%;

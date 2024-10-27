@@ -273,6 +273,10 @@ See https://github.com/adobe-type-tools/cmap-resources
                 </div>
 
                 <div class="verticalToolbarSeparator hiddenMediumView"></div>
+                <!-- 调整按钮布局 标记 ppqwqqq
+                <button id="secondaryOpenFile" class="toolbarButton labeled" type="button" title="Open File" tabindex="0" data-l10n-id="pdfjs-open-file-button">
+                -->
+
 
                 <div id="secondaryToolbarToggle" class="toolbarButtonWithContainer">
                   <button id="secondaryToolbarToggleButton" class="toolbarButton" type="button" title="Tools" tabindex="0" data-l10n-id="pdfjs-tools-button" aria-expanded="false" aria-haspopup="true" aria-controls="secondaryToolbar">
@@ -619,15 +623,6 @@ See https://github.com/adobe-type-tools/cmap-resources
 
     </div> <!-- outerContainer -->
     <div id="printContainer"></div>
-  <script>
-    // 在 viewer.html 中添加以下代码
-    window.addEventListener("message", (event) => {
-      if (event.data.type === "loadPDF" && event.data.url) {
-        const filePath = event.data.url;
-        PDFViewerApplication.open(filePath);
-      }
-    });
 
-  </script>
   </body>
 </html>
