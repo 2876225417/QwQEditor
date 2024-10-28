@@ -152,8 +152,32 @@ body.dark-mode .title-text{
     filter: brightness(1.2);
 }
 
+.language-selector{
+    padding-bottom: 20px;
+    padding-left: 20px;
+    margin-top: 20px;
+    display: flex;
+    -webkit-app-region: no-drag;
+}
 
 
+.language-selector label {
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.language-selector select{
+    padding: 5px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.language-selector img{
+    -webkit-app-region: no-drag;
+    height: 30px;
+    width: 30px;
+}
 
 body.dark-mode #minimize-btn:hover{
     background: #3a8ec0;
@@ -381,7 +405,7 @@ body.dark-mode .title-bar button:active{
 body.dark-mode #toggleButton{
     background: linear-gradient(145deg, #2a2a2a, #1e1e1e);
     box-shadow: 0 4px 12px rgba(255, 255 ,255, 0.1), 0 0 0 2px #333;
-    transition: background 0.3s ease, box-shadow 0.3s ease, left 0.3s;
+    transition: left 0.3s ease-in, box-shadow 0.3s ease, background 0.3s ease;
 }
 
 body.dark-mode #toggleButton i{

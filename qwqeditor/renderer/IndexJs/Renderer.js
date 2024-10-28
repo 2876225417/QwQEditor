@@ -32,9 +32,38 @@ window.electronAPI.onThemeUpdate((isDarkMode) => {
 });
 
 
-document.getElementById("show-notification").addEventListener("click", () => {
-   window.electronAPI.showNotification("标题", "内容");
+// document.getElementById("show-notification").addEventListener("click", () => {
+//    window.electronAPI.showNotification("标题", "内容");
+// })
+
+document.getElementById("languageSelect").addEventListener("change", (event) => {
+    const selectedLanguage = event.target.value;
+    localStorage.setItem("selectedLanguage", selectedLanguage);
+    applyLanguage(selectedLanguage);
 })
+
+window.addEventListener("DOMContentLoaded", async () => {
+    await loadLanguageData();
+    const savedLanguage = localStorage.getItem("selectedLanguage") || "en";
+    document.getElementById("languageSelect").value = savedLanguage;
+    applyLanguage(savedLanguage);
+})
+
+let languageData = { }
+
+async function loadLanguageData(){
+    const response = await fetch("../assets/language.json")
+    languageData = await response.json();
+}
+
+function applyLanguage(language){
+    const data = languageData[language];
+    if(data){
+        document.getElementById("home").textContent = data.home;
+        document.getElementById("about").textContent = data.about;
+    }
+}
+
 
 
 // if("Notification" in window){
