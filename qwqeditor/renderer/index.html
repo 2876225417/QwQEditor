@@ -15,7 +15,10 @@
     <!--标题栏-->
     <div class="title-bar">
         <img src="../assets/qwqeditor.png" alt="App Icon" class="title-icon"/>
-        <button id="toggle-theme">Theme</button>
+        <label class="theme-toggle">
+            <input type="checkbox" id="toggle-theme">
+            <span class="slider"></span>
+        </label>
         <div class="title-text">ppQwQqq</div>
         <div class="title-bar-buttons">
             <button id="minimize-btn">—</button>
@@ -30,6 +33,7 @@
             <button id="toggleButton" aria-label="Toggle Sidebar">
                 <i class="fas fa-angle-left"></i>
             </button>
+            <button id="show-notification">NT</button>
             <!--导航栏内容-->
             <nav class="sidebar">
                 <ul>

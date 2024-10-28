@@ -10,6 +10,60 @@ body {
 
 }
 
+/* 胶囊的基本样式 */
+.theme-toggle {
+    -webkit-app-region: no-drag;
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 30px;
+}
+
+.theme-toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* 胶囊样式 */
+.slider {
+    -webkit-app-region: no-drag;
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    border-radius: 30px;
+    transition: background-color 0.4s;
+}
+
+/* 球的样式 */
+.slider::before {
+    position: absolute;
+    content: "";
+    height: 24px;
+    width: 24px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    border-radius: 50%;
+    transition: transform 0.4s;
+}
+
+/* 当切换到深色模式时的样式 */
+input:checked + .slider {
+    background-color: #333;
+}
+
+input:checked + .slider::before {
+    transform: translateX(30px);
+}
+
+
+
+
 /* 标题栏部分 */
 
 /* 标题栏样式 */
@@ -40,11 +94,17 @@ body.dark-mode .title-bar{
 }
 
 .title-text {
+    color: #333;
     flex-grow: 1; /* 占据可用空间居中 */
     text-align: center;
     font-weight: bold;
     font-size: 16px;
     -webkit-app-region: drag; /* 标题可拖动 */
+}
+
+
+body.dark-mode .title-text{
+    color: white;
 }
 
 .title-buttons {
@@ -93,11 +153,6 @@ body.dark-mode .title-bar{
 }
 
 
-body.dark-mode .title-bar button{
-    background: #333;
-    color: #e0e0e0;
-    transition: backgroudn-color 0.3s ease, color 0.3s ease;
-}
 
 
 body.dark-mode #minimize-btn:hover{
@@ -228,6 +283,20 @@ body.dark-mode .title-bar button:active{
     transition: font-size 0.5s ease-out;
 }
 
+.sidebar.hidden .arrow-icon {
+    display: none;
+}
+
+.sidebar.hidden .submenu {
+    position: absolute;
+    left: 80px;
+    background-color: #333;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+    z-index: 100;
+}
+
 .fas{
     font-size: 20px;
     transition: font-size 0.3s ease-in, padding 0.3s ease-in;
@@ -241,24 +310,14 @@ body.dark-mode .title-bar button:active{
     position: relative;
 }
 
-.sidebar.hidden .submenu {
-    position: absolute;
-    left: 80px;
-    background-color: #333;
-    padding: 10px;
-    border-radius: 5px;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
-    z-index: 100;
-}
+
 
 .arrow-icon {
     font-size: 12px;
     margin-left: 8px;
 }
 
-.sidebar.hidden .arrow-icon {
-    display: none;
-}
+
 
 
 .has-submenu{

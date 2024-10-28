@@ -18,7 +18,24 @@ contextBridge.exposeInMainWorld("electronAPI",{
     }),
     onInitialTheme: (callback) => ipcRenderer.on("initial-theme", (event, isDarkMode) => callback(isDarkMode)),
 
+    showNotification: (title, body) => {
+        Notification.requestPermission().then(permission => {
+            const notificationTitle = String(title);
+            const notificationContent = String(body);
 
+            new Notification(notificationTitle, {
+                body: notificationContent,
+            })
+        });
+    },
+
+    autoNotification: () => {
+        ipcRenderer.send("auto-notification", () => {
+            const currentTime = new Date().toLocaleTimeString();
+            window.electronAPI.showNotification("ppQwQqq", `事件${currentTime}`);
+        })
+    }
 });
+
 
 

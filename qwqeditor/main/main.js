@@ -8,6 +8,9 @@ const { app,
     nativeTheme}
     = require("electron");
 
+
+app.setAppUserModelId("ppqwqqq");
+
 const path = require("path")
 const fs = require('fs');
 let mainWin;
@@ -23,13 +26,14 @@ function createWindows(){
         height: 800,
         frame: false, // 禁用 Electron 默认框架
         // transparent: true,
+        // backgroundMaterial: "acrylic",
         backgroundMaterial: "acrylic",
         webPreferences:{
             preload: path.join(__dirname, "../preload/preload.js"),
             nodeIntegration: false,
             contextIsolation: true,
         },
-        icon: path.join(__dirname, "../assets/qwqeditor.png")
+        icon: path.join(__dirname, "../assets/qwqeditor.ico")
     });
 
     mainWin.on("maximize", () => {
@@ -50,7 +54,9 @@ function createWindows(){
 
     mainWin.webContents.on("did-finish-load", () => {
         mainWin.webContents.send("initial-theme", nativeTheme.shouldUseDarkColors);
-    })
+        mainWin.webContents.send("auto-notification");
+    });
+
 
 }
 
@@ -64,6 +70,15 @@ ipcMain.on("toggle-dark-mode", (event) => {
 });
 
 
+ipcMain.on("show-notification", () => {
+    new Notification({
+        title: "标题",
+        body: "内容",
+        icon: "../assets/qwqeditor.ico",
+    })
+})
+
+// app.disableHardwareAcceleration(false);
 
 // 打开文件对话框并返回文件路径
 // 处理文件对话框
