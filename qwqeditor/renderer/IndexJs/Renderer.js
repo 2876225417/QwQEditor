@@ -3,6 +3,10 @@
 // 开启应用后自动发送
 window.electronAPI.showNotification("测试标题", '测试内容');
 
+const getCurrentTheme = () => {
+    return document.body.classList.contains("dark-mode") ? "dark" : "light";
+};
+
 
 // 根据当前用户设备自动设置主题颜色
 window.electronAPI.onInitialTheme((isDarkMode) => {
@@ -13,11 +17,23 @@ window.electronAPI.onInitialTheme((isDarkMode) => {
         document.body.classList.remove("dark-mode");
         document.getElementById("toggle-theme").checked = false;
     }
+
+    const initialTheme = isDarkMode ? "dark" : "light";
+    Object.values(iframes).forEach(iframe => {
+        iframe.contentWindow.postMessage({ theme: initialTheme }, "*");
+    });
 });
 
 // 监听主题切换事件
 document.getElementById("toggle-theme").addEventListener("change", () => {
+    const isDarkMode = document.body.classList.toggle("dark-mode");
     window.electronAPI.sendThemeToggle();
+
+    const currentTheme = isDarkMode ? "dark" : "light";
+
+    Object.values(iframes).forEach(iframe => {
+        iframe.contentWindow.postMessage({ theme: currentTheme }, "*");
+    });
 });
 
 // 监听主题更新事件，更新样式
@@ -35,6 +51,7 @@ window.electronAPI.onThemeUpdate((isDarkMode) => {
 // document.getElementById("show-notification").addEventListener("click", () => {
 //    window.electronAPI.showNotification("标题", "内容");
 // })
+
 
 document.getElementById("languageSelect").addEventListener("change", (event) => {
     const selectedLanguage = event.target.value;

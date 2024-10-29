@@ -34,7 +34,7 @@ contextBridge.exposeInMainWorld("electronAPI",{
             const currentTime = new Date().toLocaleTimeString();
             window.electronAPI.showNotification("ppQwQqq", `事件${currentTime}`);
         })
-    }
+    },
 });
 
 

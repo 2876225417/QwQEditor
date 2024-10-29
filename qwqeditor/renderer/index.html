@@ -82,6 +82,10 @@
     const Links = document.querySelectorAll(".sidebar a");
     const iframes = {}; // 用于存储每个 iframe
 
+    const getCurrentPage = () => {
+        return document.body.classList.contains("dark-mode") ? "dark" : "light";
+    }
+
     // 切换页面
     function switchPage(id, url) {
         // 隐藏所有 iframe
@@ -98,6 +102,10 @@
             iframe.style.height = "100%";
             iframe.style.border = "none";
             iframe.dataset.id = id;
+
+            iframe.onload = () => {
+                iframe.contentWindow.postMessage({ theme: getCurrentPage()}, "*");
+            };
 
             // 添加到容器和 iframe 集合中
             iframeContainer.appendChild(iframe);
@@ -131,9 +139,6 @@
             iframe.postMessage({ action: "displayFileTree", fileTree: fileTree }, "*");
         }
     });
-
-
-
 
 
     const navLinks = document.querySelectorAll(".sidebar ul li a");

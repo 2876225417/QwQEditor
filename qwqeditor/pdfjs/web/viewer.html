@@ -182,6 +182,11 @@ See https://github.com/adobe-type-tools/cmap-resources
                 </span>
               </div>
               <div id="toolbarViewerRight" class="toolbarHorizontalGroup">
+                <!-- 调整后的 打开文件按钮位置 -->
+                <div id="openFile" class="toolbarButtonWithContainer">
+                  <button id="secondaryOpenFile" class="toolbarButton labeled" type="button" title="Open File" tabindex="0" data-l10n-id="pdfjs-open-file-button">
+                  </button>
+                </div>
                 <div id="editorModeButtons" class="toolbarHorizontalGroup" role="radiogroup">
                   <div id="editorHighlight" class="toolbarButtonWithContainer">
                     <button id="editorHighlightButton" class="toolbarButton" type="button" disabled="disabled" title="Highlight" role="radio" aria-expanded="false" aria-haspopup="true" aria-controls="editorHighlightParamsToolbar" tabindex="0" data-l10n-id="pdfjs-editor-highlight-button">
@@ -208,7 +213,9 @@ See https://github.com/adobe-type-tools/cmap-resources
                       </div>
                     </div>
                   </div>
+
                   <div id="editorFreeText" class="toolbarButtonWithContainer">
+
                     <button id="editorFreeTextButton" class="toolbarButton" type="button" disabled="disabled" title="Text" role="radio" aria-expanded="false" aria-haspopup="true" aria-controls="editorFreeTextParamsToolbar" tabindex="0" data-l10n-id="pdfjs-editor-free-text-button">
                       <span data-l10n-id="pdfjs-editor-free-text-button-label">Text</span>
                     </button>
@@ -272,7 +279,7 @@ See https://github.com/adobe-type-tools/cmap-resources
                   </button>
                 </div>
 
-                <div class="verticalToolbarSeparator hiddenMediumView"></div>
+                <!--div class="verticalToolbarSeparator hiddenMediumView"></div-->
                 <!-- 调整按钮布局 标记 ppqwqqq
                 <button id="secondaryOpenFile" class="toolbarButton labeled" type="button" title="Open File" tabindex="0" data-l10n-id="pdfjs-open-file-button">
                 -->
@@ -284,9 +291,9 @@ See https://github.com/adobe-type-tools/cmap-resources
                   </button>
                   <div id="secondaryToolbar" class="hidden doorHangerRight menu">
                     <div id="secondaryToolbarButtonContainer" class="menuContainer">
-                      <button id="secondaryOpenFile" class="toolbarButton labeled" type="button" title="Open File" tabindex="0" data-l10n-id="pdfjs-open-file-button">
-                        <span data-l10n-id="pdfjs-open-file-button-label">Open</span>
-                      </button>
+                      <!--button id="secondaryOpenFile" class="toolbarButton labeled" type="button" title="Open File" tabindex="0" data-l10n-id="pdfjs-open-file-button"-->
+                        <!--span data-l10n-id="pdfjs-open-file-button-label">Open</span-->
+                      <!--/button-->
 
                       <div class="visibleMediumView">
                         <button id="secondaryPrint" class="toolbarButton labeled" type="button" title="Print" tabindex="0" data-l10n-id="pdfjs-print-button">

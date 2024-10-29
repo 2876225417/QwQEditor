@@ -28,6 +28,7 @@ function createWindows(){
         // transparent: true,
         // backgroundMaterial: "acrylic",
         backgroundMaterial: "acrylic",
+        webgl: true,
         webPreferences:{
             preload: path.join(__dirname, "../preload/preload.js"),
             nodeIntegration: false,

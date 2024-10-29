@@ -1,105 +1,34 @@
 
-<br>
-<br>
-<br>
-<br>
-<br>
 
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';"/>
+    <link rel="stylesheet" href="../css/home.css">
+
+</head>
+
+<body>
 <h1>Home</h1>
-<p>Welcome to the Home section</p>
-
-<!-- 添加按钮 -->
-<button id="selectFolderButton">选择文件夹</button>
-
-<!-- 预留文件树显示区域 -->
-<div id="fileTree" class="file-tree"></div>
-
-<style>
-    /* 文件树区域样式 */
-    .file-tree {
-        font-family: Arial, sans-serif;
-        margin-top: 10px;
-    }
-
-    /* 文件夹和文件样式 */
-    .file-item {
-        display: flex;
-        align-items: center;
-        padding: 5px;
-        cursor: pointer;
-    }
-    .file-item:hover {
-        background-color: #f0f0f0;
-    }
-
-    /* 文件夹图标 */
-    .folder-icon, .file-icon {
-        margin-right: 8px;
-    }
-
-    /* 文件夹和文件名样式 */
-    .file-name {
-        font-size: 14px;
-    }
-
-    /* 文件夹的嵌套样式 */
-    .folder-children {
-        margin-left: 20px;
-        display: none; /* 默认隐藏子文件夹 */
-    }
-    .folder-expanded .folder-children {
-        display: block; /* 展开子文件夹 */
-    }
-</style>
 
 <script>
-    document.getElementById("selectFolderButton").addEventListener("click", () => {
-        // 向父窗口发送选择文件夹请求
-        window.parent.postMessage({ action: "selectFolder" }, "*");
-    });
-
     window.addEventListener("message", (event) => {
-        if (event.data.action === "displayFileTree" && event.data.fileTree) {
-            displayFileTree(event.data.fileTree);
-        }
-    });
-
-    function displayFileTree(files, container = document.getElementById("fileTree")) {
-        container.innerHTML = ""; // 清空文件树区域
-        files.forEach(file => {
-            const item = document.createElement("div");
-            item.classList.add("file-item");
-
-            // 设置文件夹和文件的图标
-            const icon = document.createElement("span");
-            icon.classList.add(file.isDirectory ? "folder-icon" : "file-icon");
-            icon.textContent = file.isDirectory ? "📁" : "📄";
-
-            const fileName = document.createElement("span");
-            fileName.textContent = file.name;
-            fileName.classList.add("file-name");
-
-            item.appendChild(icon);
-            item.appendChild(fileName);
-
-            container.appendChild(item);
-
-            // 如果是文件夹，创建嵌套的子元素
-            if (file.isDirectory) {
-                const childrenContainer = document.createElement("div");
-                childrenContainer.classList.add("folder-children");
-
-                item.classList.add("folder-item");
-                item.appendChild(childrenContainer);
-
-                // 点击文件夹展开/折叠子文件夹
-                item.addEventListener("click", (e) => {
-                    e.stopPropagation();
-                    item.classList.toggle("folder-expanded");
-                    displayFileTree(file.children, childrenContainer);
-                });
+        if(event.data && event.data.theme){
+            if(event.data.theme === "dark"){
+                document.body.classList.add("dark-mode");
+                console.log("subIndex darkmode");
+            }else{
+                document.body.classList.remove("dark-mode");
             }
-        });
-    }
+        }
+    })
 
 </script>
+
+
+</body>
+
+</html>

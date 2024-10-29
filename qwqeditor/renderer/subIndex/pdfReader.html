@@ -6,13 +6,45 @@
     <title>PDFViewer - Reader Page</title>
 </head>
 <body>
-<h1>PDF Viewer</h1>
-<!-- 直接加载 PDF.js viewer.html -->
-<iframe id="pdfViewer" src="../../pdfjs/web/viewer.html" style="width: 100%; height: calc(100vh - 40px); border: none;"></iframe>
+<div class="pdfReader_container">
+
+
+    <!--powered by pdf.js -->
+    <iframe class="pdf_viewer" id="pdfViewer" src="../../pdfjs/web/viewer.html"></iframe>
+</div>
 </body>
+
+<script>
+
+
+
+
+</script>
 
 
 <style>
+
+
+
+
+    body{
+        margin: 0px;
+    }
+
+    .pdfReader_container{
+        display: flex;
+    }
+
+
+    .pdf_viewer{
+        width: 100%;
+        height: calc(100vh - 20px);
+        border: none;
+    }
+
+
+
+
 
 </style>
 
