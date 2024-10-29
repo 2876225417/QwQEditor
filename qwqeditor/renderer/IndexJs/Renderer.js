@@ -3,18 +3,23 @@
 // 开启应用后自动发送
 window.electronAPI.showNotification("测试标题", '测试内容');
 
+const languageIcon = document.querySelector(".language-selector img");
+
 const getCurrentTheme = () => {
     return document.body.classList.contains("dark-mode") ? "dark" : "light";
 };
+
 
 
 // 根据当前用户设备自动设置主题颜色
 window.electronAPI.onInitialTheme((isDarkMode) => {
     if(isDarkMode){
         document.body.classList.add("dark-mode");
+        languageIcon.src = "../assets/language1.png";
         document.getElementById("toggle-theme").checked = true;
     }else{
         document.body.classList.remove("dark-mode");
+        languageIcon.src = "../assets/language2.png";
         document.getElementById("toggle-theme").checked = false;
     }
 
@@ -39,9 +44,11 @@ document.getElementById("toggle-theme").addEventListener("change", () => {
 // 监听主题更新事件，更新样式
 window.electronAPI.onThemeUpdate((isDarkMode) => {
     if(isDarkMode){
+        languageIcon.src = "../assets/language1.png";
         document.body.classList.add("dark-mode");
         document.getElementById("toggle-theme").checked = true;
     }else{
+        languageIcon.src = "../assets/language2.png";
         document.body.classList.remove("dark-mode");
         document.getElementById("toggle-theme").checked = false;
     }

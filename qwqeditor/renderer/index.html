@@ -12,29 +12,28 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-<div>
-    <!--标题栏-->
-    <div class="title-bar">
-        <img src="../assets/qwqeditor.png" alt="App Icon" class="title-icon"/>
-        <label class="theme-toggle">
-            <input type="checkbox" id="toggle-theme">
-            <span class="slider"></span>
-        </label>
-        <div class="language-selector">
-            <img src="../assets/language.png" alt="语言">
-            <select id="languageSelect">
-                <option value="en">English</option>
-                <option value="zh">中文</option>
-            </select>
-        </div>
-        <div class="title-text">ppQwQqq</div>
-        <div class="title-bar-buttons">
-            <button id="minimize-btn">—</button>
-            <button id="maximize-btn">□</button>
-            <button id="close-btn">✕</button>
-        </div>
+<!--标题栏-->
+<div class="title-bar">
+    <img src="../assets/qwqeditor.png" alt="App Icon" class="title-icon"/>
+    <label class="theme-toggle">
+        <input type="checkbox" id="toggle-theme">
+        <span class="slider"></span>
+    </label>
+    <div class="language-selector">
+        <img src="../assets/language1.png" alt="语言">
+        <select id="languageSelect">
+            <option value="en">English</option>
+            <option value="zh">中文</option>
+        </select>
     </div>
-
+    <input type="text" id="search-box" placeholder="Search..." class="search-box">
+    <div class="title-bar-buttons">
+        <button id="minimize-btn">—</button>
+        <button id="maximize-btn">□</button>
+        <button id="close-btn">✕</button>
+    </div>
+</div>
+<div>
     <div class="container">
         <div class="sidebar-container">
             <!--切换导航栏可见按钮-->
@@ -52,7 +51,7 @@
                     <li class="has-submenu">
                         <a href="#service" data-page="subIndex/service.html" data-id="service">
                             <i class="fas fa-cogs"></i><span>Service</span>
-                            <i class="arrow-icon fas fa-chevron-down"></i>
+                            <i id="service-arrow" class="arrow-icon fas fa-chevron-down"></i>
                         </a>
                         <!-- 子选项 -->
                         <ul class="submenu">
@@ -71,6 +70,20 @@
         <div class="iframe-container"></div>
     </div>
 </div>
+
+<div class="status-bar">
+    <div class="status-left">
+        <span id="status-text">Ready</span>
+    </div>
+
+    <div class="status-right">
+        <span id="file_path">No File</span>
+    </div>
+
+
+</div>
+
+
 
 <script src="IndexJs/PageSwitch.js"></script>
 <script src="IndexJs/Renderer.js"></script>
@@ -150,6 +163,7 @@
         })
     })
 
+
     document.querySelectorAll(".has-submenu > a").forEach(parent => {
         parent.addEventListener("click", function(event){
             event.preventDefault();
@@ -160,7 +174,9 @@
             if(submenu){
                 if(document.querySelector(".sidebar").classList.contains("hidden")){
                     submenu.style.display = "none";
+
                 }else{
+
                     submenu.style.display = submenu.style.display === "block" ? "none" : "block";
                     submenu.style.position = "relative";
                     submenu.style.left = "0";
@@ -175,17 +191,20 @@
         const toggleButton = document.getElementById("toggleButton");
         const submenu = document.querySelector(".submenu");
         const hasSubmenu = document.querySelector(".has-submenu");
+        const serviceArrow = document.getElementById("service-arrow");
         sidebar.classList.toggle("hidden");
         if(sidebar.classList.contains("hidden")){
             document.getElementById("toggleButton").style.left = "60px";
             document.getElementById("toggleButton").innerHTML = '<i class="fas fa-angle-right"></i>';
             submenu.style.display = "none";
+            serviceArrow.style.display = "none";
 
             if(hasSubmenu.classList.contains("open")){
                 hasSubmenu.classList.remove("open");
             }
         }else{
             document.getElementById("toggleButton").style.left = "180px";
+            serviceArrow.style.display = "inline";
             document.getElementById("toggleButton").innerHTML = '<i class="fas fa-angle-left"></i>';
             if(hasSubmenu.classList.contains("open")){
                 hasSubmenu.classList.remove("open");

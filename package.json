@@ -1,11 +1,10 @@
 {
   "name": "qwqeditor",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "ppQwQqq Editor",
   "main": "qwqeditor/main/main.js",
   "productName": "qwqeditor",
   "scripts": {
-    "build:css": "cross-env NODE_ENV=development npx tailwindcss -i ./qwqeditor/styles.css -o qwqeditor/tailwindO.css --watch",
     "start": "electron-forge start",
     "test": "echo \"Error: no test specified\" && exit 1",
     "package": "electron-forge package",
