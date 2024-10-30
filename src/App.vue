@@ -1,30 +1,43 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
+  <div class="container">
+    <TitleBar />
+    <div class="sidebar-container">
+      <button id="toggleButton" aria-label="Toggle Sidebar">
+        <i class="fas fa-angle-left"></i>
+      </button>
+
+      <nav class="sidebar">
+        <ul>
+          <li><router-link to="/home">Home</router-link></li>
+          <li><router-link to="/about">About</router-link></li>
+          <li><router-link to="/service">Service</router-link></li>
+        </ul>
+      </nav>
+    </div>
+
+    <div class="content-container">
+      <router-view></router-view> <!-- 动态加载的页面内容 -->
+    </div>
   </div>
-  <HelloWorld msg="Vite + Vue" />
 </template>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+<script>
+import TitleBar from './components/TitleBar.vue'
+
+
+export default {
+  name: 'App',
+  components:{
+    TitleBar,
+  }
+
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
+</script>
+
+<style>
+.app-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 </style>
