@@ -1,22 +1,23 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
 
-// 引入页面组件
-import Home from '../pages/Home.vue'
-import About from '../pages/About.vue'
-import Service from '../pages/Service.vue'
 
-// 定义路由规则
+import { createRouter, createWebHashHistory } from "vue-router"
+
+import Home from "../pages/Home.vue";
+import About from "../pages/About.vue";
+import Service from "../pages/Service.vue";
+import PdfReader from "../pages/pdfReader.vue";
+
 const routes = [
     { path: '/', component: Home },
-    { path: '/home', component: Home },
-    { path: '/about', component: About },
-    { path: '/service', component: Service },
-]
+    { path: "/home", component: Home },
+    { path: "/about", component: About },
+    { path: "/service", component: Service },
+    { path: "/pdfReader", component: PdfReader},
+];
 
-// 创建并导出路由实例
 const router = createRouter({
     history: createWebHashHistory(),
     routes,
-})
+});
 
-export default router
+export default router;

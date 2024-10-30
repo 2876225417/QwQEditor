@@ -1,0 +1,23 @@
+
+
+
+.StatusBarContainer{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #333;
+    color: white;
+    padding: 5px 15px;
+    font-size: 14px;
+    height: 30px;
+}
+
+.StatusBarLeft{
+    display: flex;
+    align-items: center;
+}
+
+.StatusBarRight{
+    display: flex;
+    align-items: center;
+}

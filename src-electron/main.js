@@ -1,5 +1,5 @@
 // src-electron/main.js
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, ipcMain} = require('electron')
 const { join } = require('path')
 
 // 屏蔽安全警告
@@ -28,7 +28,16 @@ const createWindow = () => {
     }else {
         win.loadFile(join(__dirname, '../dist/index.html'))
     }
+
+    // 窗口控制：监听来自渲染进程的事件
+    ipcMain.on('window-control', (event, action) => {
+        if (action === 'minimize') win.minimize()
+        if (action === 'maximize') win.isMaximized() ? win.unmaximize() : win.maximize()
+        if (action === 'close') win.close()
+    })
 }
+
+
 
 // Electron 会在初始化后并准备
 app.whenReady().then(() => {

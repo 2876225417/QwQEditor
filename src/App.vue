@@ -1,43 +1,100 @@
 <template>
-  <div class="container">
+  <div class="container-layout">
     <TitleBar />
-    <div class="sidebar-container">
-      <button id="toggleButton" aria-label="Toggle Sidebar">
-        <i class="fas fa-angle-left"></i>
-      </button>
 
-      <nav class="sidebar">
-        <ul>
-          <li><router-link to="/home">Home</router-link></li>
-          <li><router-link to="/about">About</router-link></li>
-          <li><router-link to="/service">Service</router-link></li>
-        </ul>
-      </nav>
+    <div class="middle-container">
+      <SideBar />
+
+      <div class="content-container">
+        <router-view></router-view>
+      </div>
     </div>
 
-    <div class="content-container">
-      <router-view></router-view> <!-- 动态加载的页面内容 -->
-    </div>
+
+    <StatusBar />
   </div>
 </template>
 
 <script>
-import TitleBar from './components/TitleBar.vue'
-
+import TitleBar from "./components/TitleBar.vue";
+import SideBar from "./components/SideBar.vue";
+import StatusBar from "./components/StatusBar.vue";
 
 export default {
-  name: 'App',
-  components:{
+  name: "App",
+  components: {
     TitleBar,
-  }
-
-}
+    SideBar,
+    StatusBar,
+  },
+};
 </script>
 
-<style>
-.app-container {
-  height: 100vh;
+<style scoped>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #app {
+  height: 100%;
+  overflow: hidden;
+}
+
+.container-layout {
   display: flex;
   flex-direction: column;
+  height: 100vh;
+  width: 100vw;
 }
+
+/* 固定 TitleBar 高度 */
+.title-bar {
+  height: 50px; /* 你可以调整这个高度 */
+  background-color: #444;
+  color: white;
+  display: flex;
+  align-items: center;
+  padding: 0 15px;
+}
+
+/* 中间部分：侧边栏 + 内容区域 */
+.middle-container {
+  display: flex;
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+
+
+/* 侧边栏中的导航 */
+.sidebar ul {
+  list-style: none;
+  width: 100%;
+}
+
+.sidebar li {
+  margin: 10px 0;
+}
+
+/* 内容区域 */
+.content-container {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 20px;
+  background-color: #f0f0f0;
+}
+
+/* 底部状态栏 */
+.status-bar {
+  height: 30px;
+  background-color: #333;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10px;
+}
+
 </style>
