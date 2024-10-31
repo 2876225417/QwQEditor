@@ -15,9 +15,9 @@ const routes = [
     { path: "/pdfReader", component: PdfReader},
 ];
 
-const router = createRouter({
+const index = createRouter({
     history: createWebHashHistory(),
     routes,
 });
 
-export default router;
+export default index;
