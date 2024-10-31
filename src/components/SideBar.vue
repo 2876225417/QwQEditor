@@ -1,41 +1,65 @@
 <template>
   <div class="sidebar-container">
-    <button id="toggleButton" aria-label="Toggle Sidebar">
-      <font-awesome-icon :icon="['fas', 'angle-left']" id="ToggleButtonIcon"/>
+    <button
+        id="toggleButton"
+        @click="toggleSidebar"
+        :class="{ hidden: isSidebarCollapsed }"
+    >
+      <font-awesome-icon
+          :icon="['fas', isSidebarCollapsed ? 'angle-right' : 'angle-left']"
+          id="ToggleButtonIcon"
+      />
     </button>
 
-    <nav class="sidebar">
+    <nav :class="['sidebar', { hidden: isSidebarCollapsed }]">
       <ul>
         <li>
           <router-link to="/home">
             <font-awesome-icon :icon="['fas', 'home']" class="OptionIcon"/>
-            <span>Home</span>
+            <transition name="fade">
+              <span v-if="!isSidebarCollapsed">Home</span>
+            </transition>
           </router-link>
         </li>
+
+
         <li>
           <router-link to="/about">
             <font-awesome-icon :icon="['fas', 'cogs']" class="OptionIcon"/>
             <span>About</span>
           </router-link>
         </li>
-        <li id="serviceLink">
-          <router-link to="/service">
-            <font-awesome-icon :icon="['fas', 'user']" class="OptionIcon"/>
-            <span>Service</span>
-          </router-link>
-        </li>
 
-        <ul v-show="serviceMenuOpen" class="submenu">
-          <li><router-link to="/service/web">Web Dev</router-link></li>
-          <li><router-link to="/service/web">Web Dev</router-link></li>
-          <li><router-link to="/service/web">Web Dev</router-link></li>
-        </ul>
 
         <li>
           <router-link to="/pdfReader">
             <font-awesome-icon :icon="['fas', 'file-pdf']" class="OptionIcon"/>
             <span>pdfReader</span>
-          </router-link></li>
+          </router-link>
+        </li>
+        <!--带有子菜单-->
+        <li class="service-option-container">
+          <div class="service-option" @click="toggleServiceMenu">
+            <font-awesome-icon :icon="['fas', 'user']" class="OptionIcon" />
+            <transition name="fade">
+              <span v-if="!isSidebarCollapsed">Service</span>
+            </transition>
+            <font-awesome-icon
+                :icon="['fas', !isSidebarCollapsed ? 'angle-down' : 'angle-right']"
+            />
+          </div>
+
+        <ul :class="['submenu', { 'submenu-collapsed' : isSidebarCollapsed, show: serviceMenuOpen }]"
+            :style="submenuStyle"
+            @click="toggleServiceMenu_"
+        >
+
+          <li><router-link to="/service/web">Web Dev</router-link></li>
+          <li><router-link to="/service/web">Web Dev</router-link></li>
+          <li><router-link to="/service/web">Web Dev</router-link></li>
+        </ul>
+        </li>
+        <!-- -->
       </ul>
     </nav>
   </div>
@@ -50,7 +74,9 @@ export default {
 
   data(){
     return {
+      isSidebarCollapsed: false,
       serviceMenuOpen: false,
+      submenuStyle: {},
     }
   },
 
@@ -80,15 +106,36 @@ export default {
   },
 
   methods:{
-    handleToggleClick(){
+
+
+    toggleSidebar(){
+      this.isSidebarCollapsed = !this.isSidebarCollapsed;
+    },
+
+    toggleServiceMenu_(){
+      console.log(this.isSidebarCollapsed);
+      if(!this.isSidebarCollapsed){
+        this.isSidebarCollapsed = true;
+        this.serviceMenuOpen = false;
+      }
+      this.servicemenuOpen = !this.servicemenuOpen;
+    },
+
+    toggleServiceMenu(){
+      if(this.isSidebarCollapsed){
+        this.isSidebarCollapsed = false;
+      }
       this.serviceMenuOpen = !this.serviceMenuOpen;
+    },
+    handleToggleClick(){
+
       const sidebar = document.querySelector(".sidebar");
-      sidebar.classList.toggle("hidden");
-      // this.serviceMenuOpen = false;
+     //  sidebar.classList.toggle("hidden");
+      this.serviceMenuOpen = false;
       console.log("Toggle clicked");
     },
     expandMenu(){
-      // this.serviceMenuOpen = !this.serviceMenuOpen;
+      this.serviceMenuOpen = !this.serviceMenuOpen;
     }
   }
 
@@ -97,6 +144,17 @@ export default {
 </script>
 
 <style scoped>
+
+/* 淡入淡出动画 */
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
+}
+
+
 .sidebar-container{
   padding: 0;
 }
@@ -118,20 +176,21 @@ export default {
   list-style-type: none;
   padding: 0;
   margin: 0;
+
 }
 
 .sidebar ul li {
-  padding: 15px;
+  padding: 15px 15px 15px 3px;
   transition: background 0.3s, transform 0.3s ease-in-out;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .sidebar ul li:hover {
   background-color: rgba(52, 73, 94, 0.7);
-  transform: scale(1.05);
 }
 
 .sidebar ul li a{
+  padding-left: 10px;
   color: #ecf0f1;
   text-decoration: none;
   font-weight: bold;
@@ -141,13 +200,17 @@ export default {
 }
 
 .sidebar.hidden{
-  padding-top: 70px;
+  padding-top: 100px;
   width: 80px;
   overflow: hidden;
   transition: width 0.3s ease-in, padding 0.3s ease-in;
 }
 
 .sidebar.hidden ul li a span{
+  display: none;
+}
+
+.service-option.hidden ul li a span{
   display: none;
 }
 
@@ -171,7 +234,7 @@ export default {
 
 /* 当子菜单展开时 */
 .submenu.show {
-  max-height: 200px; /* 根据内容高度调整 */
+  max-height: 250px; /* 根据内容高度调整 */
   opacity: 1;
 }
 
@@ -187,8 +250,6 @@ export default {
 .submenu li:hover {
   background-color: rgba(255, 255, 255, 0.2);
 }
-
-
 
 #toggleButton {
   display: flex;
@@ -210,6 +271,10 @@ export default {
   transition: left 0.3s ease-in, box-shadow 0.3s ease, background 0.3s ease;
 }
 
+#toggleButton.hidden{
+  left: 60px;
+}
+
 #ToggleButtonIcon{
   font-size: 20px;
   color: #333;
@@ -226,8 +291,25 @@ export default {
   transform: scale(1.1);
 }
 
+/* 选中状态的样式 */
+.router-link-active {
+  background-color: rgba(26, 88, 156, 0.2);
+  color: #1abc9c;
+  border-radius: 6px;
+  padding: 6px 6px 6px 6px;
+  transition: color 0.3s ease-in-out;
+}
 
+.router-link-active .OptionIcon{
+  transform: scale(1.1);
+  transition: transform 0.5s, color 0.5s;
+}
 
+.OptionIcon{
+  height: 25px;
+  transform: translateX(10px);
+  padding-right: 20px;
+}
 
 
 </style>

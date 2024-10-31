@@ -23,15 +23,15 @@ export default {
 
 <style scoped>
 .pdfReader_container {
-  display: flex;
-  width: 100%;
-  height: 100vh;
-  overflow: hidden;
+  //display: flex;
+  //width: 100%;
+  //height: 100vh;
+  //overflow: hidden;
 }
 
 .pdf_viewer {
-  width: 100%;
-  height: 100%;
-  border: none;
+  //width: 100%;
+  //height: 100%;
+  //border: none;
 }
 </style>
