@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div @contextmenu.prevent="showContextMenu($event)">
     <div class="book-count-container">
       <div class="background-circle"></div>
       <div class="icon-circle">
@@ -12,10 +12,6 @@
       <div class="decorative-text">
         Keep adding books to expand your knowledge!
       </div>
-      <div>
-        <button @click="selectDownloadPath">Choose Download Path</button>
-        <span v-if="downloadPath">Selected Path: {{ downloadPath }}</span>
-      </div>
     </div>
 
     <div class="filter-container">
@@ -26,8 +22,8 @@
           {{ category }}
         </option>
       </select>
+      <span v-if="downloadPath">Selected Path: {{ downloadPath }}</span>
     </div>
-
 
     <div id="books-container">
       <p v-if="loading">Loading books...</p>
@@ -36,14 +32,14 @@
         <div v-for="(books, category) in categorizedBooks" :key="category" class="category">
           <h2>{{ category }}</h2>
           <div v-for="book in books" :key="book.title" class="book">
-            <img :src="`https://qintong.space${book.cover_link}`" :alt="book.title || 'Book Cover'"/>
+            <img :src="`https://qintong.space${book.cover_link}`" :alt="book.title || 'Book Cover'" />
             <h3>{{ book.title || 'Book Title' }}</h3>
             <a v-if="book.book_link" @click.prevent="downloadBook(book)">Download</a>
             <span v-else>No download link available</span>
           </div>
         </div>
       </div>
-      <!-- 翻页按钮 -->
+      <!-- 原始翻页按钮 -->
       <div class="pagination">
         <button @click="prevPage" :disabled="currentPage === 1">Previous</button>
         <span>Page {{ currentPage }} of {{ totalPages }}</span>
@@ -55,33 +51,44 @@
       <span>{{ currentDownloads }}</span>
     </div>
 
+    <!-- 右键菜单 -->
+    <div v-if="isContextMenuVisible" :style="contextMenuStyle" class="context-menu">
+      <ul>
+        <li @click="openDownloadsPopup">查看已下载的书籍</li>
+        <li @click="selectDownloadPath">选择下载路径</li>
+        <li @click="prevPage">上一页</li>
+        <li @click="nextPage">下一页</li>
+        <li @click="closeDownloadsPopup">关闭</li>
+      </ul>
+    </div>
+
     <!-- 弹窗结构 -->
     <div v-if="showDownloadsPopup" class="popup-overlay" @click.self="closeDownloadsPopup">
       <div class="popup-content">
-        <h2>PDF Files in {{ downloadPath }}</h2>
+        <h2>PDF 文件列表 ({{ downloadPath }})</h2>
         <ul>
           <li v-for="file in pdfFiles" :key="file">
             {{ file }}
-            <button @click="deleteFile(file)">Delete</button>
-            <button @click="promptRename(file)">Rename</button>
-            <button @click="promptCopy(file)">Copy</button>
-            <button @click="promptMove(file)">Move</button>
+            <button @click="deleteFile(file)">删除</button>
+            <button @click="showRenameDialog(file)">重命名</button>
+            <button @click="showCopyDialog(file)">复制</button>
+            <button @click="showMoveDialog(file)">移动</button>
           </li>
         </ul>
-        <button @click="closeDownloadsPopup">Close</button>
+        <button @click="closeDownloadsPopup">关闭</button>
       </div>
     </div>
 
-
-    <button @click="openDownloadsPopup">View Downloaded Books</button>
-
-
-
-
-
-
+    <!-- 输入弹窗 -->
+    <InputDialog
+        :title="dialogTitle"
+        :visible="isDialogVisible"
+        @confirm="handleDialogConfirm"
+        @close="closeDialog"
+    />
   </div>
 </template>
+
 
 <script>
 import {
@@ -91,11 +98,15 @@ import {
   getDownloadPath,
 } from "../indexedDB.js";
 
+import InputDialog from "../components/InputDialog.vue";
 const { ipcRenderer } = require("electron");
 const fs = require("fs");
 const path = require("path");
 
 export default {
+  components: {
+    InputDialog,
+  },
   data() {
     return {
       books: [],
@@ -109,6 +120,15 @@ export default {
       selectedCategory: "All",
       pdfFiles: [],
       showDownloadsPopup: false,
+      isDialogVisible: false,
+      dialogTitle: "",
+      dialogAction: null,
+      currentFile: null,
+      isContextMenuVisible: false,
+      contextMenuStyle: {
+        top: '0px',
+        left: '0px',
+      },
     };
   },
   computed: {
@@ -163,6 +183,25 @@ export default {
     }
   },
   methods: {
+    showContextMenu(event) {
+      // 设置菜单位置
+      this.contextMenuStyle = {
+        top: `${event.clientY}px`,
+        left: `${event.clientX}px`,
+      };
+      this.isContextMenuVisible = true;
+
+      // 添加点击事件监听，点击其他地方关闭菜单
+      window.addEventListener('click', this.hideContextMenu);
+    },
+    hideContextMenu() {
+      this.isContextMenuVisible = false;
+      window.removeEventListener('click', this.hideContextMenu);
+    },
+    handleMenuAction(action) {
+      console.log(`Action selected: ${action}`);
+      this.hideContextMenu();
+    },
     // 删除文件的方法...
     promptRename(file) {
       const newName = prompt('Enter new name for the file:', file);
@@ -203,53 +242,81 @@ export default {
     closeDownloadsPopup() {
       this.showDownloadsPopup = false;
     },
-    // 删除文件
     deleteFile(fileName) {
       const filePath = path.join(this.downloadPath, fileName);
       fs.unlink(filePath, (err) => {
         if (err) {
-          console.error('Error deleting file:', err);
+          console.error("删除文件时出错：", err);
         } else {
-          this.fetchPdfFiles(); // 重新加载文件列表
+          this.fetchPdfFiles();
         }
       });
     },
-    // 重命名文件
+    showRenameDialog(file) {
+      this.dialogTitle = `重命名 ${file}`;
+      this.dialogAction = "rename";
+      this.currentFile = file;
+      this.isDialogVisible = true;
+    },
+    showCopyDialog(file) {
+      this.dialogTitle = `复制 ${file} 到：`;
+      this.dialogAction = "copy";
+      this.currentFile = file;
+      this.isDialogVisible = true;
+    },
+    showMoveDialog(file) {
+      this.dialogTitle = `移动 ${file} 到：`;
+      this.dialogAction = "move";
+      this.currentFile = file;
+      this.isDialogVisible = true;
+    },
+    handleDialogConfirm(userInput) {
+      if (this.dialogAction === "rename") {
+        this.renameFile(this.currentFile, userInput);
+      } else if (this.dialogAction === "copy") {
+        this.copyFile(this.currentFile, userInput);
+      } else if (this.dialogAction === "move") {
+        this.moveFile(this.currentFile, userInput);
+      }
+    },
+    closeDialog() {
+      this.isDialogVisible = false;
+      this.currentFile = null;
+      this.dialogAction = null;
+    },
     renameFile(oldName, newName) {
-      if (!newName.endsWith('.pdf')) {
-        newName += '.pdf'; // 确保新名称有 .pdf 后缀
+      if (!newName.endsWith(".pdf")) {
+        newName += ".pdf";
       }
       const oldPath = path.join(this.downloadPath, oldName);
       const newPath = path.join(this.downloadPath, newName);
       fs.rename(oldPath, newPath, (err) => {
         if (err) {
-          console.error('Error renaming file:', err);
+          console.error("重命名文件时出错：", err);
         } else {
-          this.fetchPdfFiles(); // 重新加载文件列表
+          this.fetchPdfFiles();
         }
       });
     },
-    // 复制文件
     copyFile(fileName, destinationPath) {
       const sourcePath = path.join(this.downloadPath, fileName);
       const destPath = path.join(destinationPath, fileName);
       fs.copyFile(sourcePath, destPath, (err) => {
         if (err) {
-          console.error('Error copying file:', err);
+          console.error("复制文件时出错：", err);
         } else {
-          alert('File copied successfully!');
+          alert("文件复制成功！");
         }
       });
     },
-    // 剪切文件（移动文件）
     moveFile(fileName, destinationPath) {
       const sourcePath = path.join(this.downloadPath, fileName);
       const destPath = path.join(destinationPath, fileName);
       fs.rename(sourcePath, destPath, (err) => {
         if (err) {
-          console.error('Error moving file:', err);
+          console.error("移动文件时出错：", err);
         } else {
-          this.fetchPdfFiles(); // 重新加载文件列表
+          this.fetchPdfFiles();
         }
       });
     },
@@ -597,7 +664,9 @@ function deepEqual(obj1, obj2) {
   max-width: 700px;
   margin: 0 auto;
   overflow: hidden;
+  transition: background 0.3s, color 0.3s, box-shadow 0.3s;
 }
+
 
 .book-count-box {
   background: linear-gradient(135deg, #6c63ff, #536dfe);
@@ -609,6 +678,7 @@ function deepEqual(obj1, obj2) {
   font-size: 1.8em;
   position: relative;
   z-index: 1;
+  transition: background 0.3s, color 0.3s, box-shadow 0.3s;
 }
 
 .book-count-box:before {
@@ -647,6 +717,7 @@ function deepEqual(obj1, obj2) {
   top: -40px;
   right: -40px;
   animation: pulse 6s infinite;
+  transition: background 0.3s;
 }
 
 .icon-circle {
@@ -661,7 +732,22 @@ function deepEqual(obj1, obj2) {
   align-items: center;
   justify-content: center;
   animation: pulse 6s infinite;
+  transition: background 0.3s;
 }
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+
+
 
 body {
   font-family: Arial, sans-serif;
@@ -742,4 +828,194 @@ h1 {
   cursor: not-allowed;
   opacity: 0.5;
 }
+
+
+.context-menu {
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.2); /* 半透明背景 */
+  backdrop-filter: blur(10px); /* 毛玻璃模糊效果 */
+  border: 1px solid rgba(255, 255, 255, 0.3); /* 半透明边框 */
+  border-radius: 12px; /* 圆角边框 */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* 更明显的阴影效果 */
+  z-index: 1000;
+  overflow: hidden; /* 确保圆角效果 */
+  transition: all 0.3s ease; /* 平滑过渡效果 */
+}
+
+.context-menu ul {
+  list-style: none;
+  padding: 10px;
+  margin: 0;
+}
+
+.context-menu li {
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 8px; /* 增加圆角 */
+  transition: background-color 0.2s ease; /* 平滑的悬停效果 */
+}
+
+.context-menu li:hover {
+  background-color: rgba(255, 255, 255, 0.3); /* 悬停时的半透明背景 */
+}
+
+
+
+body.dark-mode {
+  background-color: #121212;
+  color: #e0e0e0;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+body.dark-mode .popup-overlay {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+body.dark-mode .popup-content {
+  background: #1e1e1e;
+  color: #e0e0e0;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  transition: background 0.3s, color 0.3s;
+}
+
+body.dark-mode .popup-content button {
+  background-color: #5a9b9e;
+  color: #fff;
+  transition: background-color 0.3s;
+}
+
+body.dark-mode .popup-content button:hover {
+  background-color: #4d8d8e;
+}
+
+body.dark-mode .filter-container label {
+  color: #bbb;
+}
+
+body.dark-mode .filter-container select {
+  background-color: #2a2a2a;
+  color: #e0e0e0;
+  border: 1px solid #444;
+  transition: background-color 0.3s, color 0.3s, border 0.3s;
+}
+
+body.dark-mode .download-indicator {
+  background-color: #5a9b9e;
+  transition: background-color 0.3s;
+}
+
+body.dark-mode .download-indicator:hover {
+  background-color: #4d8d8e;
+}
+
+body.dark-mode #download-status {
+  background-color: #1e1e1e;
+  border: 1px solid #444;
+  color: #e0e0e0;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  transition: background-color 0.3s, border 0.3s, color 0.3s;
+}
+
+body.dark-mode .bubble-message {
+  background-color: #5a9b9e;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+body.dark-mode .book-count-container {
+  background: linear-gradient(135deg, #1e2a38, #2a3b4f);
+  color: #e2e8f0;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+}
+
+body.dark-mode .book-count-box {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: #e2e8f0;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+}
+
+body.dark-mode .book-count-box:before {
+  background: linear-gradient(135deg, #2d6a4f, #1b4332);
+  opacity: 0.8;
+}
+
+body.dark-mode .book-count-box span {
+  color: #e2e8f0;
+}
+
+body.dark-mode .decorative-text {
+  color: #94a3b8;
+}
+
+body.dark-mode .background-circle {
+  background: rgba(76, 201, 240, 0.1);
+  transition: background 0.3s;
+}
+
+body.dark-mode .icon-circle {
+  background: rgba(255, 183, 77, 0.2);
+  transition: background 0.3s;
+}
+
+body.dark-mode .category {
+  background-color: #1e1e1e;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+body.dark-mode .category h2 {
+  background-color: #333;
+  color: #e0e0e0;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+body.dark-mode .book {
+  background-color: #1e1e1e;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+body.dark-mode .book h3 {
+  color: #e0e0e0;
+  transition: color 0.3s;
+}
+
+body.dark-mode .book a {
+  background-color: #5a9b9e;
+  color: #fff;
+  transition: background-color 0.3s;
+}
+
+body.dark-mode .book a:hover {
+  background-color: #4d8d8e;
+}
+
+body.dark-mode .pagination button {
+  background-color: #333;
+  color: #e0e0e0;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+body.dark-mode .pagination button:disabled {
+  opacity: 0.3;
+}
+
+body.dark-mode .context-menu {
+  background-color: #1e1e1e;
+  border: 1px solid #444;
+  color: #e0e0e0;
+  transition: background-color 0.3s, border 0.3s, color 0.3s;
+}
+
+body.dark-mode .context-menu li:hover {
+  background-color: #333;
+  transition: background-color 0.3s;
+}
+
+
+
+
 </style>

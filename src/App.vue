@@ -88,6 +88,13 @@ html, body, #app {
   padding: 20px;
   background-color: #f0f0f0;
 }
+body.dark-mode .content-container {
+  background-color: #1e1e1e; /* 深色背景 */
+  color: #e0e0e0; /* 浅色文本 */
+  transition: background-color 0.3s, color 0.3s; /* 平滑的过渡效果 */
+}
+
+
 
 /* 底部状态栏 */
 .status-bar {
