@@ -5,9 +5,11 @@
     <div class="middle-container">
       <SideBar />
 
-      <div class="content-container">
-        <router-view></router-view>
-      </div>
+      <keep-alive>
+        <div class="content-container">
+          <router-view></router-view>
+        </div>
+      </keep-alive>
     </div>
 
 
@@ -80,7 +82,8 @@ html, body, #app {
 
 /* 内容区域 */
 .content-container {
-  flex-grow: 1;
+  width: 100%;
+  height: calc(100vh - 80px);
   overflow-y: auto;
   padding: 20px;
   background-color: #f0f0f0;

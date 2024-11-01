@@ -1,8 +1,16 @@
 // src-electron/main.js
-const { app, BrowserWindow, ipcMain, nativeTheme} = require('electron')
+const {
+    app,
+    BrowserWindow,
+    ipcMain,
+    nativeTheme,
+    dialog
+} = require('electron')
 const { join } = require('path')
-
-
+const https = require("https");
+const fs=  require("fs");
+const path = require("path");
+const axios = require("axios");
 
 // 屏蔽安全警告
 // ectron Security Warning (Insecure Content-Security-Policy)
@@ -45,7 +53,59 @@ const createWindow = () => {
         if (action === 'minimize') win.minimize()
         if (action === 'maximize') win.isMaximized() ? win.unmaximize() : win.maximize()
         if (action === 'close') win.close()
-    })
+    });
+
+    // 打开文件资源管理器
+    ipcMain.handle("dialog:openDirectory", async () => {
+        const result = await dialog.showOpenDialog({
+            properties: ['openDirectory'],
+        });
+        return result.filePaths[0];
+    });
+
+    // 监听下载事件
+    ipcMain.on('start-download', async (event, { url, filename, downloadPath }) => {
+        const filePath = `${downloadPath}/${filename}.pdf`;
+        const writer = fs.createWriteStream(filePath);
+
+        const response = await axios({
+            url,
+            method: 'GET',
+            responseType: 'stream'
+        });
+
+        const totalLength = response.headers['content-length'];
+        let downloadedLength = 0;
+
+        response.data.on('data', (chunk) => {
+            downloadedLength += chunk.length;
+            const progress = Math.round((downloadedLength / totalLength) * 100);
+            event.sender.send(`download-progress-${filename}`, progress);
+        });
+
+        response.data.pipe(writer);
+
+        writer.on('finish', () => {
+            event.sender.send(`download-success-${filename}`);
+        });
+
+        writer.on('error', (err) => {
+            event.sender.send(`download-failure-${filename}`, err.message);
+        });
+    });
+
+    ipcMain.handle('read-pdf-files', async (event, directoryPath) => {
+        try {
+            const files = fs.readdirSync(directoryPath);
+            const pdfFiles = files.filter(file => file.endsWith('.pdf'));
+            return pdfFiles;
+        } catch (error) {
+            console.error('Error reading directory:', error);
+            return [];
+        }
+    });
+
+
 
     // 进入应用后初始化应用主题
     win.webContents.on("did-finish-load", () => {

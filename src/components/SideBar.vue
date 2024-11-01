@@ -34,7 +34,7 @@
         <li>
           <router-link to="/Library">
             <font-awesome-icon :icon="['fas', 'book']" class="OptionIcon"/>
-            <span>pdfReader</span>
+            <span>Library</span>
           </router-link>
         </li>
 

@@ -97,4 +97,12 @@ export async function getBooks() {
     });
 }
 
+export async function saveDownloadPath(path){
+    return saveConfig("downloadPath", path);
+}
+
+export async function getDownloadPath(){
+    return getConfig("downloadPath");
+}
+
 
