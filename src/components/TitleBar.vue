@@ -88,6 +88,15 @@ export default {
       console.log("Error reading theme configuration:", error);
     });
 
+    getConfig("language").then((value) => {
+      if(value){
+        this.setLanguage(value);
+        this.$i18n.locale = value;
+      }
+    }).catch((error) => {
+      console.error("Error reading language configuration:", error);
+    });
+
     ipcRenderer.on("window-maximized", () => {
       this.isMaximized = true;
     });

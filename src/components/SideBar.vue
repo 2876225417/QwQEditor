@@ -3,7 +3,7 @@
     <button
         id="toggleButton"
         @click="toggleSidebar"
-        :class="{ hidden: isSidebarCollapsed }"
+        :class="['toggle-button', { hidden: isSidebarCollapsed, 'dark-mode-button': isDarkMode }]"
     >
       <font-awesome-icon
           :icon="['fas', isSidebarCollapsed ? 'angle-right' : 'angle-left']"
@@ -11,7 +11,8 @@
       />
     </button>
 
-    <nav :class="['sidebar', { hidden: isSidebarCollapsed }]">
+
+    <nav :class="['sidebar', { 'dark-mode-sidebar': isDarkMode, hidden: isSidebarCollapsed }]">
       <ul>
         <li>
           <router-link to="/home">
@@ -27,6 +28,13 @@
           <router-link to="/about">
             <font-awesome-icon :icon="['fas', 'cogs']" class="OptionIcon"/>
             <span>About</span>
+          </router-link>
+        </li>
+
+        <li>
+          <router-link to="/Library">
+            <font-awesome-icon :icon="['fas', 'book']" class="OptionIcon"/>
+            <span>pdfReader</span>
           </router-link>
         </li>
 
@@ -66,11 +74,19 @@
 </template>
 
 <script>
-import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { mapState } from "vuex";
 
 export default {
   name: "SideBar",
-  components: {FontAwesomeIcon},
+  components: { FontAwesomeIcon },
+
+  computed: {
+    ...mapState([
+        "isDarkMode",
+    ])
+  },
+
 
   data(){
     return {
@@ -145,6 +161,9 @@ export default {
 
 <style scoped>
 
+
+
+
 /* 淡入淡出动画 */
 .fade-enter-active, .fade-leave-active {
   transition: opacity 0.2s ease;
@@ -159,7 +178,6 @@ export default {
   padding: 0;
 }
 
-
 .sidebar {
   padding-top: 100px;
   -webkit-app-region: no-drag;
@@ -170,6 +188,16 @@ export default {
               padding 0.3s ease-in,
               background-color 0.3s ease;
   overflow: hidden;
+}
+
+/* 深色模式 sidebar 样式 */
+.dark-mode-sidebar {
+  background-color: #444;
+  color: #ecf0f1;
+  transition: background-color 0.3s ease,
+              padding 0.3s ease-in,
+              color 0.3s ease,
+              width 0.3s ease-in;
 }
 
 .sidebar ul {
@@ -251,7 +279,7 @@ export default {
   background-color: rgba(255, 255, 255, 0.2);
 }
 
-#toggleButton {
+.toggle-button {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -271,8 +299,20 @@ export default {
   transition: left 0.3s ease-in, box-shadow 0.3s ease, background 0.3s ease;
 }
 
-#toggleButton.hidden{
+.toggle-button.hidden{
   left: 60px;
+}
+
+/* 深色模式下的按钮样式 */
+.dark-mode-button {
+  background-color: #333;
+  color: #fff;
+  border: 1px solid #555;
+}
+
+.dark-mode-button:hover {
+  background-color: #444 !important; /* 鼠标悬停时的背景色 */
+  color: #ddd !important; /* 鼠标悬停时的文本颜色 */
 }
 
 #ToggleButtonIcon{

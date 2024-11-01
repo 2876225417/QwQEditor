@@ -2,6 +2,8 @@
 const { app, BrowserWindow, ipcMain, nativeTheme} = require('electron')
 const { join } = require('path')
 
+
+
 // 屏蔽安全警告
 // ectron Security Warning (Insecure Content-Security-Policy)
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'

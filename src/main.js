@@ -23,6 +23,7 @@ import {
     faWindowMinimize,
     faWindowClose,
     faSearch,
+    faBook,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
@@ -39,7 +40,8 @@ library.add(
     faWindowMaximize,
     faWindowMinimize,
     faWindowClose,
-    faSearch,);
+    faSearch,
+    faBook,);
 
 const app = createApp(App);
 app.use(router);

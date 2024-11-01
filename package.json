@@ -1,18 +1,66 @@
 {
   "name": "re-qwq",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.6",
   "main": "./src-electron/main.js",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "electron:build": "vite build && electron-builder --publish always"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/2876225417/QwQEditor.git"
+  },
+  "build": {
+    "productName": "ElectronDeskTopTool",
+    "appId": "revue-qwq",
+    "copyright": "ppqwqqq © 2024",
+    "compression": "maximum",
+    "asar": true,
+    "directories": {
+      "output": "release/"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "perMachine": true,
+      "deleteAppDataOnUninstall": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "ElectronDeskTopTool"
+    },
+    "win": {
+      "icon": "./public/logo.ico",
+      "artifactName": "${productName}-v${version}-${platform}-setup.${ext}",
+      "target": [
+        {
+          "target": "nsis"
+        }
+      ]
+    },
+    "mac": {
+      "icon": "./public/logo.ico",
+      "artifactName": "${productName}-v${version}-${platform}-setup.${ext}"
+    },
+    "linux": {
+      "icon": "./public/logo.ico",
+      "artifactName": "${productName}-v${version}-${platform}-setup.${ext}"
+    }
+  },
+  "publish": {
+    "provider": "github",
+    "owner": "2876225417",
+    "repo": "QwQEditor",
+    "releaseType": "release"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@fortawesome/vue-fontawesome": "^3.0.8",
     "electron-store": "^10.0.0",
+    "node-fetch": "^3.3.2",
     "pdfjs-dist": "^4.7.76",
     "vue": "^3.5.12",
     "vue-i18n": "^10.0.4",
