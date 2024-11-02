@@ -11,6 +11,7 @@ const https = require("https");
 const fs=  require("fs");
 const path = require("path");
 const axios = require("axios");
+const myAddon = require("../build/Release/myaddon.node")
 
 // 屏蔽安全警告
 // ectron Security Warning (Insecure Content-Security-Policy)
@@ -94,16 +95,37 @@ const createWindow = () => {
         });
     });
 
-    ipcMain.handle('read-pdf-files', async (event, directoryPath) => {
+    ipcMain.handle('read-file-tree', async (event, directoryPath) => {
+        const readDirectory = (dirPath) => {
+            const items = fs.readdirSync(dirPath);
+            return items.map(item => {
+                const fullPath = path.join(dirPath, item);
+                const stats = fs.statSync(fullPath);
+                if (stats.isDirectory()) {
+                    return {
+                        name: item,
+                        isFolder: true,
+                        expanded: false, // 这里可以设置为 false，表示初始状态为折叠
+                        children: readDirectory(fullPath) // 递归读取子目录
+                    };
+                } else if (stats.isFile() && item.endsWith('.pdf')) {
+                    return {
+                        name: item,
+                        isFolder: false,
+                    };
+                }
+            }).filter(item => item); // 过滤掉未定义的项
+        };
+
         try {
-            const files = fs.readdirSync(directoryPath);
-            const pdfFiles = files.filter(file => file.endsWith('.pdf'));
-            return pdfFiles;
+            const fileTree = readDirectory(directoryPath);
+            return fileTree;
         } catch (error) {
             console.error('Error reading directory:', error);
             return [];
         }
     });
+
 
 
 

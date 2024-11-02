@@ -24,6 +24,9 @@ import {
     faWindowClose,
     faSearch,
     faBook,
+    faFolder,
+    faFolderClosed,
+    faFile,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
@@ -41,10 +44,15 @@ library.add(
     faWindowMinimize,
     faWindowClose,
     faSearch,
-    faBook,);
+    faBook,
+    faFolder,
+    faFolderClosed,
+    faFile,
+    );
 
 const app = createApp(App);
-app.use(router);
 app.use(store);
+app.use(router);
+
 app.use(i18n);
 app.mount("#app");

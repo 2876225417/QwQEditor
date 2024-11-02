@@ -106,3 +106,33 @@ export async function getDownloadPath(){
 }
 
 
+export async function savePdfFile(filePath) {
+    const db = await openDatabase();
+    const transaction = db.transaction('settings', 'readwrite'); // 使用 settings 对象存储
+    const store = transaction.objectStore('settings');
+
+    store.put({ key: 'pdfFilePath', value: filePath });
+
+    return new Promise((resolve, reject) => {
+        transaction.oncomplete = () => resolve();
+        transaction.onerror = () => reject(transaction.error);
+    });
+}
+
+export async function getPdfFile() {
+    const db = await openDatabase();
+    const transaction = db.transaction('settings', 'readonly');
+    const store = transaction.objectStore('settings');
+
+    return new Promise((resolve, reject) => {
+        const request = store.get('pdfFilePath');
+
+        request.onsuccess = () => {
+            resolve(request.result ? request.result.value : null);
+        };
+
+        request.onerror = () => reject(request.error);
+    });
+}
+
+

@@ -1,5 +1,5 @@
 <template>
-  <div @contextmenu.prevent="showContextMenu($event)">
+  <div @contextmenu.prevent="showLibraryContextMenu($event)">
     <div class="book-count-container">
       <div class="background-circle"></div>
       <div class="icon-circle">
@@ -51,8 +51,10 @@
       <span>{{ currentDownloads }}</span>
     </div>
 
+
+
     <!-- 右键菜单 -->
-    <div v-if="isContextMenuVisible" :style="contextMenuStyle" class="context-menu">
+    <div v-if="isLibraryContextMenuVisible" :style="libraryContextMenuStyle" class="context-menu">
       <ul>
         <li @click="openDownloadsPopup">查看已下载的书籍</li>
         <li @click="selectDownloadPath">选择下载路径</li>
@@ -62,21 +64,13 @@
       </ul>
     </div>
 
+    <file-tree @context-menu="showFileTreeContextMenu"></file-tree>
+
     <!-- 弹窗结构 -->
-    <div v-if="showDownloadsPopup" class="popup-overlay" @click.self="closeDownloadsPopup">
-      <div class="popup-content">
-        <h2>PDF 文件列表 ({{ downloadPath }})</h2>
-        <ul>
-          <li v-for="file in pdfFiles" :key="file">
-            {{ file }}
-            <button @click="deleteFile(file)">删除</button>
-            <button @click="showRenameDialog(file)">重命名</button>
-            <button @click="showCopyDialog(file)">复制</button>
-            <button @click="showMoveDialog(file)">移动</button>
-          </li>
-        </ul>
-        <button @click="closeDownloadsPopup">关闭</button>
-      </div>
+    <div v-if="showDownloadsPopup">
+      <h2>PDF 文件列表 ({{ downloadPath }})</h2>
+      <file-tree :tree="fileTree"></file-tree> <!-- 使用文件树组件 -->
+      <button @click="closeDownloadsPopup">关闭</button>
     </div>
 
     <!-- 输入弹窗 -->
@@ -98,14 +92,21 @@ import {
   getDownloadPath,
 } from "../indexedDB.js";
 
+
+
 import InputDialog from "../components/InputDialog.vue";
+import FileTree from "../components/FileTree.vue";
 const { ipcRenderer } = require("electron");
 const fs = require("fs");
 const path = require("path");
+import { mapState, mapMutations } from 'vuex';
+
+
 
 export default {
   components: {
     InputDialog,
+    FileTree,
   },
   data() {
     return {
@@ -129,9 +130,15 @@ export default {
         top: '0px',
         left: '0px',
       },
+      fileTree: [],
+      selectedItem: null,
+      isLibraryContextMenuVisible: false,
+      libraryContextMenuStyle: {},
     };
   },
   computed: {
+    ...mapState(['isLibraryMenuVisible', 'isContextMenuVisible']), // 映射状态
+
     circleStyle() {
       const totalProgress = Object.values(this.downloadProgress).reduce((acc, { progress }) => acc + progress, 0);
       const averageProgress = totalProgress / (this.currentDownloads || 1);
@@ -183,20 +190,43 @@ export default {
     }
   },
   methods: {
-    showContextMenu(event) {
-      // 设置菜单位置
-      this.contextMenuStyle = {
+    ...mapMutations(['setLibraryMenuVisible']), // 映射 setLibraryMenuVisible 方法
+
+    hideLibraryMenu() {
+      this.setLibraryMenuVisible(false); // 使用 mutation 隐藏菜单
+    },
+
+    showLibraryContextMenu(event) {
+      // 检查 FileTree 是否有菜单显示，如果有，则关闭
+      if (this.isContextMenuVisible) {
+        this.hideContextMenu(); // 隐藏 FileTree 菜单
+      }
+
+      this.setLibraryMenuVisible(true); // 更新菜单状态
+
+      this.isLibraryContextMenuVisible = true;
+
+      // 设置上下文菜单的位置
+      this.libraryContextMenuStyle = {
         top: `${event.clientY}px`,
         left: `${event.clientX}px`,
       };
-      this.isContextMenuVisible = true;
 
-      // 添加点击事件监听，点击其他地方关闭菜单
-      window.addEventListener('click', this.hideContextMenu);
+      // 阻止事件冒泡
+      event.stopPropagation();
+
+      // 监听点击事件以隐藏菜单
+      window.addEventListener('click', this.hideLibraryContextMenu);
     },
-    hideContextMenu() {
-      this.isContextMenuVisible = false;
-      window.removeEventListener('click', this.hideContextMenu);
+    hideLibraryContextMenu() {
+      this.isLibraryContextMenuVisible = false;
+      this.$store.commit('setLibraryMenuVisible', false); // 更新状态
+
+      window.removeEventListener('click', this.hideLibraryContextMenu);
+    },
+    showFileTreeContextMenu(event) {
+      // 将 FileTree 的上下文菜单状态设置为可见
+      this.$refs.fileTree.showContextMenu(event);
     },
     handleMenuAction(action) {
       console.log(`Action selected: ${action}`);
@@ -229,8 +259,11 @@ export default {
 
       try {
         // 调用主进程方法读取 PDF 文件
-        const files = await ipcRenderer.invoke('read-pdf-files', this.downloadPath);
-        this.pdfFiles = files;
+        const tree = await ipcRenderer.invoke('read-file-tree', this.downloadPath);
+
+        console.log(tree);
+        this.fileTree = tree;
+        console.log("FileTree: ", this.fileTree);
       } catch (error) {
         console.error('Error fetching PDF files:', error);
       }
@@ -473,8 +506,15 @@ export default {
   watch: {
     selectedCategory() {
       this.currentPage = 1; // 重置页码
+    },
+    isLibraryMenuVisible(newValue) {
+      if (!newValue) {
+        console.log("lib menu: ", this.isLibraryMenuVisible);
+        this.hideLibraryMenu(); // 隐藏图书馆菜单
+        this.isLibraryContextMenuVisible = false;
+      }
     }
-  }
+  },
 };
 
 // 标准化对象数组函数，移除

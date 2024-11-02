@@ -7,6 +7,7 @@ import About from "../pages/About.vue";
 import Service from "../pages/Service.vue";
 import PdfReader from "../pages/pdfReader.vue";
 import Library from "../pages/Library.vue"
+import _EmptyTest from "../pages/_EmptyTest.vue";
 
 const routes = [
     { path: '/', component: Home },
@@ -14,7 +15,8 @@ const routes = [
     { path: "/about", component: About },
     { path: "/service", component: Service },
     { path: "/pdfReader", component: PdfReader },
-    { path: '/Library', component: Library },
+    { path: "/Library", component: Library },
+    { path: "/test", component: _EmptyTest },
 ];
 
 const index = createRouter({

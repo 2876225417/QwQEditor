@@ -38,6 +38,13 @@
           </router-link>
         </li>
 
+        <li>
+          <router-link to="/test">
+            <font-awesome-icon :icon="['fas', 'file-pdf']" class="OptionIcon"/>
+            <span>test</span>
+          </router-link>
+        </li>
+
 
         <li>
           <router-link to="/pdfReader">
