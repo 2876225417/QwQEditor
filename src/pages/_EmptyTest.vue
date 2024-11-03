@@ -7,10 +7,9 @@
 </template>
 
 <script>
-// 直接使用 Node.js 的 require 导入你的 C++ 插件
 const path = require('path');
 const myAddon = require(path.resolve(__dirname, '../../../../../../src-electron/cppAddons/myaddon.node'));
-
+const axios = require('axios');  // 引入 Axios
 
 export default {
   data() {
@@ -20,12 +19,26 @@ export default {
   },
   methods: {
     startLongTask() {
+      this.message = "Fetching IP address, please wait..."; // 更新提示信息
+
+      // 替换为你的云服务器的地址
+      const apiUrl = 'https://qintong.space/qwq/clientIP';
+
+      // 使用 Axios 获取 IP 地址
+      axios.get(apiUrl)
+          .then(response => {
+            this.message = `Your IP address is: ${response.data.ip}`; // 显示 IP 地址
+          })
+          .catch(error => {
+            console.error("Error fetching IP:", error);
+            this.message = "Failed to fetch IP address.";
+          });
+
+      // 如果需要，可以在这里继续调用 C++ 插件的 long task
       try {
-        // 调用 myAddon 的 startThread 方法，并传递一个回调函数
         myAddon.startThread((result) => {
-          this.message = result;
+          this.message += `\nLong task result: ${result}`; // 更新结果信息
         });
-        this.message = "Task started, please wait...";
       } catch (error) {
         console.error("Error starting long task:", error);
       }
@@ -33,6 +46,7 @@ export default {
   }
 };
 </script>
+
 
 <style scoped>
 h1 {

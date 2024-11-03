@@ -27,6 +27,7 @@ import {
     faFolder,
     faFolderClosed,
     faFile,
+    faBookOpen,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
@@ -48,6 +49,7 @@ library.add(
     faFolder,
     faFolderClosed,
     faFile,
+    faBookOpen,
     );
 
 const app = createApp(App);

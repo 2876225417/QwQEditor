@@ -85,7 +85,7 @@ html, body, #app {
   width: 100%;
   height: calc(100vh - 80px);
   overflow-y: auto;
-  padding: 20px;
+
   background-color: #f0f0f0;
 }
 body.dark-mode .content-container {

@@ -4,7 +4,8 @@ const {
     BrowserWindow,
     ipcMain,
     nativeTheme,
-    dialog
+    dialog,
+    Notification,
 } = require('electron')
 const { join } = require('path')
 const https = require("https");
@@ -117,6 +118,8 @@ const createWindow = () => {
             }).filter(item => item); // 过滤掉未定义的项
         };
 
+
+
         try {
             const fileTree = readDirectory(directoryPath);
             return fileTree;
@@ -125,6 +128,62 @@ const createWindow = () => {
             return [];
         }
     });
+
+    const ipinfoToken = '33a893cfdfece8';
+    const openWeatherKey = '7e791510500b1afd1ea1bac6fe5e7c03';
+
+    function getWeatherAndNotify() {
+        // 获取用户的真实 IP 地址
+        axios.get('https://qintong.space/qwq/clientIP')
+            .then(ipResponse => {
+                const userIp = ipResponse.data.ip; // 获取用户 IP 地址
+                console.log(userIp);
+                // 获取地理位置信息
+                return axios.get(`https://ipinfo.io/${userIp}/json?token=${ipinfoToken}`);
+            })
+            .then(locationResponse => {
+                const { city, region, country, loc } = locationResponse.data;
+                const [lat, lon] = loc.split(',');
+
+                // 使用经纬度获取天气信息
+                return axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${openWeatherKey}&units=metric`, {
+                    timeout: 10000  // 设置超时时间为 10 秒
+                });
+            })
+            .then(weatherResponse => {
+                const { main, weather } = weatherResponse.data;
+                const temperature = main.temp;
+                const weatherDescription = weather[0].description;
+
+                // 在窗口创建后显示通知
+                const notification = {
+                    title: '当前天气信息',
+                    body: `温度: ${temperature}°C, 天气: ${weatherDescription}`,
+                };
+
+                // 检查是否支持通知
+                if (Notification.isSupported()) {
+                    new Notification(notification).show();
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                console.error("Weather API Error:", error.message);
+                const notification = {
+                    title: '天气信息获取失败',
+                    body: '无法获取当前天气信息，请检查网络连接。',
+                };
+
+                if (Notification.isSupported()) {
+                    new Notification(notification).show();
+                }
+            });
+    }
+
+// 调用函数获取天气并显示通知
+    getWeatherAndNotify();
+
+
 
 
 
@@ -135,6 +194,8 @@ const createWindow = () => {
         win.webContents.send("initial-theme", isDarkMode);
     })
 }
+
+
 
 // Electron 会在初始化后并准备
 app.whenReady().then(() => {

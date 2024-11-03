@@ -6,13 +6,7 @@
       <div :class="['toggle-circle', { 'toggle-circle-dark': isDarkMode }]"></div>
     </div>
 
-    <div class="language-selector">
-      <img src="../assets/language1.png" alt="语言">
-      <select id="languageSelect" @change="onLanguageChange">
-        <option value="en" :selected="language === 'en'">{{ $t('language') }}: English</option>
-        <option value="zh" :selected="language === 'zh'">{{ $t('language')}}: 中文</option>
-      </select>
-    </div>
+
 
 
 
@@ -28,6 +22,14 @@
           class="search-icon"
           @click="handleSearch"
       />
+    </div>
+
+    <div class="language-selector">
+      <img src="../assets/language1.png" alt="语言">
+      <select id="languageSelect" @change="onLanguageChange">
+        <option value="en" :selected="language === 'en'">{{ $t('language') }}: English</option>
+        <option value="zh" :selected="language === 'zh'">{{ $t('language')}}: 中文</option>
+      </select>
     </div>
 
 
@@ -197,7 +199,6 @@ body.dark-mode {
   justify-content: space-between;
   width: 100%;
   height: 40px;
-  padding: 0 10px;
   background: linear-gradient(145deg, #ffffff, #d1d9e6);
   color: white;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
@@ -208,13 +209,13 @@ body.dark-mode .title-bar {
 }
 .title-icon {
   -webkit-app-region: drag;
-  height: 30px;
-  width: 30px;
-  margin-right: 10px;
+  height: 40px;
+  width: 40px;
 }
 
 /* 语言选择器样式 */
 .language-selector {
+  width: 205px;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -298,15 +299,17 @@ body.dark-mode .search-icon{
 
 /* 窗口控制按钮样式 */
 .window-controls {
+
   display: flex;
   align-items: center;
   gap: 10px;
+  padding-right: 20px;
 }
 .window-controls button {
   background: none;
   border: none;
   color: blanchedalmond;
-  font-size: 18px;
+  font-size: 25px;
   cursor: pointer;
   -webkit-app-region: no-drag;
   transition: color 0.3s, transform 0.2s;
@@ -316,6 +319,7 @@ body.dark-mode .search-icon{
 }
 .window-controls button:active {
   transform: scale(1.05);
+  border-radius: 5px;
 }
 #minimize-btn:hover { background: #3a8ec0; }
 #maximize-btn:hover { background: #4caf50; }

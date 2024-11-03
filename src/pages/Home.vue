@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="Home-Container">
     <h1>{{ $t('welcome') }}</h1>
     <!-- 使用 isDarkMode 动态设置类 -->
     <div :class="{ 'dark-mode': isDarkMode }" class="content">
@@ -28,6 +28,11 @@ export default {
 </script>
 
 <style scoped>
+
+.Home-Container{
+  padding: 20px
+}
+
 /* 默认的浅色模式样式 */
 .content {
   background-color: #f9f9f9;
