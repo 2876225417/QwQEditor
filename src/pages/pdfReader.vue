@@ -7,6 +7,13 @@
         frameborder="0"
     ></iframe>
 
+    <!-- 笔图标 -->
+    <font-awesome-icon
+        :icon="['fas', 'pen']"
+        class="edit-icon"
+        @click="openNoteWindow"
+    />
+
     <!-- 替换为书本图标 -->
     <font-awesome-icon
         :icon="['fas', 'book']"
@@ -28,13 +35,14 @@
 <script>
 import { savePdfFile, getPdfFile } from '../indexedDB';
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"; // 确保正确路径
+const { ipcRenderer } = require('electron'); // 引入 ipcRenderer
 
 export default {
   name: "PdfReader",
-  components: { FontAwesomeIcon },
+  components: {FontAwesomeIcon},
   data() {
     return {
-      pdfViewerSrc: "/pdfjs/web/viewer.html?locale=en", // 默认语言为英语
+      pdfViewerSrc: "/pdfjs/web/viewer.html",
     };
   },
   methods: {
@@ -45,7 +53,7 @@ export default {
       const file = event.target.files[0];
       if (file) {
         const filePath = URL.createObjectURL(file);
-        this.pdfViewerSrc = `/pdfjs/web/viewer.html?file=${encodeURIComponent(filePath)}&locale=en`;
+        this.pdfViewerSrc = `/pdfjs/web/viewer.html?file=${encodeURIComponent(filePath)}`;
 
         // 保存文件到 IndexedDB
         await this.saveFile(file);
@@ -59,57 +67,51 @@ export default {
       console.log("filename:", fileName);
       if (file) {
         const filePath = URL.createObjectURL(file);
-        const locale = 'en'; // 设置所需的语言
-        this.pdfViewerSrc = `/pdfjs/web/viewer.html?file=${encodeURIComponent(filePath)}&locale=en`;
-
-
-
+        this.pdfViewerSrc = `/pdfjs/web/viewer.html?file=${encodeURIComponent(filePath)}`;
       }
     },
-    getPdfViewerStatus() {
-      const iframe = document.getElementById('pdfViewer');
-      iframe.contentWindow.postMessage('getStatus', '*');
-    },
-    handleMessage(event) {
-      if (event.origin === '你的 iframe 域名') { // 确保来源安全
-        const { page, scale, totalPages } = event.data;
-        console.log('Current page:', page);
-        console.log('Current scale:', scale);
-        console.log('Total pages:', totalPages);
-      }
+    openNoteWindow() {
+      ipcRenderer.send('open-note-window'); // 发送消息以打开新窗口
     },
   },
   mounted() {
-    window.addEventListener('message', this.handleMessage);
     // 你可以替换为合适的文件名
     this.loadFile('123.pdf'); // 加载特定 PDF 文件
-
   },
 };
 </script>
 
 <style scoped>
-
-
 .upload-icon {
   position: fixed; /* 固定在页面右下角 */
-  bottom: 40px; /* 距离底部20px */
-  right: 40px; /* 距离右侧20px */
+  bottom: 40px; /* 距离底部40px */
+  right: 40px; /* 距离右侧40px */
   font-size: 40px; /* 图标大小 */
   color: #007bff; /* 图标颜色 */
   cursor: pointer; /* 鼠标悬停时显示手型 */
   transition: transform 0.2s; /* 平滑过渡效果 */
 }
 
-.upload-icon:hover {
+.edit-icon {
+  position: fixed; /* 固定在页面右下角 */
+  bottom: 90px; /* 距离底部90px */
+  right: 40px; /* 距离右侧40px */
+  font-size: 40px; /* 图标大小 */
+  color: #28a745; /* 图标颜色 */
+  cursor: pointer; /* 鼠标悬停时显示手型 */
+  transition: transform 0.2s; /* 平滑过渡效果 */
+}
+
+.upload-icon:hover,
+.edit-icon:hover {
   color: #0056b3; /* 悬停时变色 */
   transform: scale(1.1); /* 悬停时放大 */
 }
 
-.upload-icon:active {
+.upload-icon:active,
+.edit-icon:active {
   transform: rotate(360deg); /* 点击时旋转 */
 }
-
 
 .pdfReader_container {
   display: flex;

@@ -1,9 +1,11 @@
 <template>
   <div class="container-layout">
-    <TitleBar />
+    <!-- 根据当前路由条件渲染 TitleBar -->
+    <TitleBar v-if="!isNotePage" />
 
     <div class="middle-container">
-      <SideBar />
+      <!-- 根据当前路由条件渲染 SideBar -->
+      <SideBar v-if="!isNotePage" />
 
       <keep-alive>
         <div class="content-container">
@@ -12,8 +14,7 @@
       </keep-alive>
     </div>
 
-
-    <StatusBar />
+    <StatusBar v-if="!isNotePage"/>
   </div>
 </template>
 
@@ -28,6 +29,11 @@ export default {
     TitleBar,
     SideBar,
     StatusBar,
+  },
+  computed: {
+    isNotePage() {
+      return this.$route.path === '/Library/NoteBook'; // 根据路由判断是否是笔记页面
+    },
   },
 };
 </script>
@@ -68,8 +74,6 @@ html, body, #app {
   overflow: hidden;
 }
 
-
-
 /* 侧边栏中的导航 */
 .sidebar ul {
   list-style: none;
@@ -85,16 +89,14 @@ html, body, #app {
   width: 100%;
   height: calc(100vh - 80px);
   overflow-y: auto;
-
   background-color: #f0f0f0;
 }
+
 body.dark-mode .content-container {
   background-color: #1e1e1e; /* 深色背景 */
   color: #e0e0e0; /* 浅色文本 */
   transition: background-color 0.3s, color 0.3s; /* 平滑的过渡效果 */
 }
-
-
 
 /* 底部状态栏 */
 .status-bar {
@@ -106,5 +108,4 @@ body.dark-mode .content-container {
   align-items: center;
   padding: 0 10px;
 }
-
 </style>

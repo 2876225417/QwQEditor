@@ -14,6 +14,8 @@ const path = require("path");
 const axios = require("axios");
 const myAddon = require("../build/Release/myaddon.node")
 
+let noteWindows = []; // 用于存储所有打开的笔记窗口
+
 // 屏蔽安全警告
 // ectron Security Warning (Insecure Content-Security-Policy)
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
@@ -184,6 +186,44 @@ const createWindow = () => {
     getWeatherAndNotify();
 
 
+    // 监听打开笔记窗口的请求
+    ipcMain.on('open-note-window', (event) => {
+        const noteWindow = new BrowserWindow({
+            width: 800,
+            height: 600,
+            frame: false,
+            webPreferences: {
+                nodeIntegration: true,
+                contextIsolation: false, // 根据需要设置
+            },
+        });
+
+        // 加载笔记组件的 URL
+        if (process.env.VITE_DEV_SERVER_URL) {
+            noteWindow.loadURL(`${process.env.VITE_DEV_SERVER_URL}#/Library/NoteBook`);
+        } else {
+            noteWindow.loadFile(path.join(__dirname, '../dist/index.html')); // 在生产模式下加载的文件
+            noteWindow.webContents.on('did-finish-load', () => {
+                noteWindow.webContents.executeJavaScript(`window.location.hash = '#/Library/NoteBook';`);
+            });
+        }
+
+        noteWindows.push(noteWindow);
+
+        noteWindow.on("closed", () => {
+            noteWindows = noteWindows.filter(win => win !== noteWindow);
+        });
+
+        // 监听主窗口关闭事件
+        win.on('closed', () => {
+            // 关闭所有子窗口
+            noteWindows.forEach(win => win.close());
+            noteWindows = []; // 清空子窗口引用
+        });
+
+    });
+
+
 
 
 
@@ -192,7 +232,11 @@ const createWindow = () => {
     win.webContents.on("did-finish-load", () => {
         const isDarkMode = nativeTheme.shouldUseDarkColors;
         win.webContents.send("initial-theme", isDarkMode);
-    })
+    });
+
+
+
+
 }
 
 

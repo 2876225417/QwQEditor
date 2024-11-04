@@ -1,39 +1,39 @@
 <template>
   <div class="Home-Container">
     <h1>{{ $t('welcome') }}</h1>
-    <!-- 使用 isDarkMode 动态设置类 -->
     <div :class="{ 'dark-mode': isDarkMode }" class="content">
       <p>Current Dark Mode: {{ isDarkMode }}</p>
       <p>{{ $t('searchPlaceholder') }}</p>
     </div>
+
   </div>
 </template>
 
 <script>
-import {mapState} from "vuex";
+import { mapState } from "vuex";
 
 export default {
+  data() {
+    return {
+      selectedRadio: null, // 默认选中的值
+    };
+  },
   computed: {
-    ...mapState([
-        "isDarkMode",
-        "language",
-    ])
+    ...mapState(["isDarkMode", "language"]),
   },
   watch: {
-    language(newLang){
+    language(newLang) {
       this.$i18n.locale = newLang;
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style scoped>
-
-.Home-Container{
-  padding: 20px
+.Home-Container {
+  padding: 20px;
 }
 
-/* 默认的浅色模式样式 */
 .content {
   background-color: #f9f9f9;
   color: #333;
@@ -43,7 +43,6 @@ export default {
   transition: background-color 0.3s, color 0.3s;
 }
 
-/* 深色模式样式 */
 .dark-mode {
   background-color: #333;
   color: #f9f9f9;
