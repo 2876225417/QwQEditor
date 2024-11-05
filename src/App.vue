@@ -5,7 +5,7 @@
 
     <div class="middle-container">
       <!-- 根据当前路由条件渲染 SideBar -->
-      <SideBar v-if="!isNotePage" />
+      <NavigationBar v-if="!isNotePage" />
 
       <keep-alive>
         <div class="content-container">
@@ -20,15 +20,15 @@
 
 <script>
 import TitleBar from "./components/TitleBar.vue";
-import SideBar from "./components/SideBar.vue";
 import StatusBar from "./components/StatusBar.vue";
+import NavigationBar from "./components/NavigationBar.vue";
 
 export default {
   name: "App",
   components: {
     TitleBar,
-    SideBar,
     StatusBar,
+    NavigationBar,
   },
   computed: {
     isNotePage() {
@@ -58,14 +58,6 @@ html, body, #app {
 }
 
 /* 固定 TitleBar 高度 */
-.title-bar {
-  height: 50px; /* 你可以调整这个高度 */
-  background-color: #444;
-  color: white;
-  display: flex;
-  align-items: center;
-  padding: 0 15px;
-}
 
 /* 中间部分：侧边栏 + 内容区域 */
 .middle-container {
@@ -98,14 +90,4 @@ body.dark-mode .content-container {
   transition: background-color 0.3s, color 0.3s; /* 平滑的过渡效果 */
 }
 
-/* 底部状态栏 */
-.status-bar {
-  height: 30px;
-  background-color: #333;
-  color: white;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 10px;
-}
 </style>
