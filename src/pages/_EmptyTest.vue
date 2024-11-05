@@ -14,7 +14,7 @@ const path = require('path');
 let myAddon;
 if(isDev) {
   console.log(isDev);
-  myAddon = require(path.resolve(__dirname, '../../../../../../src-electron/cppAddons/myaddon.node'));
+  myAddon = require(path.resolve(__dirname, '../../../../../../src-electron/cppAddons/file_tree.cpp.node'));
 }else{
   console.log(isDev);
   myAddon = require(path.join(process.resourcesPath, "build/Release/myaddon.node"));
@@ -43,18 +43,17 @@ export default {
             console.error("Error fetching IP:", error);
             this.message = "Failed to fetch IP address.";
           });
-
-      // 如果需要，可以在这里继续调用 C++ 插件的 long task
-      try {
-        myAddon.startThread((result) => {
-          this.message += `\nLong task result: ${result}`; // 更新结果信息
-        });
-      } catch (error) {
-        console.error("Error starting long task:", error);
-      }
     }
   }
 };
+
+console.log("This is a test page!");
+
+
+const directoryPath = "C:\\Users\\28762\\Desktop\\vcpkg";
+const tree = myAddon.getFileTree(directoryPath);
+console.log(tree);
+
 </script>
 
 

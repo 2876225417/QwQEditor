@@ -6,6 +6,8 @@ import store from "./store";
 import i18n from "./i18n";
 import vuetify from './plugins/vuetify'; // 引入 Vuetify
 
+
+
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 

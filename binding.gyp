@@ -1,8 +1,8 @@
 {
   "targets": [
     {
-      "target_name": "myaddon",
-      "sources": ["src-electron/cppSources/myaddon.cpp"],
+      "target_name": "file_tree",
+      "sources": ["src-electron/cppSources/file_tree.cpp"],
       "include_dirs": [
         "C:/Users/28762/WebstormProjects/re-qwq/node_modules/node-addon-api"
       ],

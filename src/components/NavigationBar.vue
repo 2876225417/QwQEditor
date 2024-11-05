@@ -16,7 +16,13 @@
         >
           <v-list-item-content>
             <v-list-item-title
-                :style="{ fontSize: '18px', fontWeight: 'bold', color: fontColor }">
+                :style="{
+                  fontSize: '18px',
+                  fontWeight: 'bold',
+                  color: fontColor,
+
+
+            }">
                  ⭐ppQwQqq⭐
             </v-list-item-title>
           </v-list-item-content>
@@ -110,6 +116,23 @@
               title="setting"
               value="setting"
               :to="{ path: '/pdfReader'}"
+          ></v-list-item>
+
+          <v-list-item
+              prepend-icon="mdi-forum"
+              title="FileTree"
+              value="FileTree"
+              :to="{ path: '/FileTree' }"
+          >
+          </v-list-item>
+
+          <v-list-item
+            prepend-icon="mdi-forum"
+            title="Test"
+            value="Test"
+            :to="{ path: '/test'}"
+
+
           ></v-list-item>
 
         </v-list>

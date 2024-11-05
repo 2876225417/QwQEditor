@@ -9,6 +9,7 @@ import PdfReader from "../pages/pdfReader.vue";
 import Library from "../pages/Library.vue"
 import _EmptyTest from "../pages/_EmptyTest.vue";
 import NoteBook from "../components/NoteBook.vue";
+import FileTree from "../pages/FileTree.vue";
 
 
 const routes = [
@@ -20,6 +21,7 @@ const routes = [
     { path: "/Library", component: Library },
     { path: "/test", component: _EmptyTest },
     { path: "/Library/notebook", component: NoteBook },
+    { path: "/FileTree", component: FileTree },
 ];
 
 const index = createRouter({

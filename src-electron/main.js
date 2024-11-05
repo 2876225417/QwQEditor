@@ -7,17 +7,15 @@ const {
     dialog,
     Notification,
 } = require('electron')
-const { join } = require('path')
-const https = require("https");
+const { join } = require('path');
 const fs=  require("fs");
 const path = require("path");
 const axios = require("axios");
-const myAddon = require("../build/Release/myaddon.node")
-
 let noteWindows = []; // 用于存储所有打开的笔记窗口
 
-// 屏蔽安全警告
-// ectron Security Warning (Insecure Content-Security-Policy)
+/* 屏蔽安全警告
+ * electron Security Warning (Insecure Content-Security-Policy)
+ */
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
 
 // 创建浏览器窗口时，调用这个函数。
@@ -34,11 +32,10 @@ const createWindow = () => {
     })
 
     // win.webContents.openDevTools() // 测试发行版本
-    // development模式
-    if(process.env.VITE_DEV_SERVER_URL) {
+    if(process.env.VITE_DEV_SERVER_URL /* 开发模式 */) {
         win.loadURL(process.env.VITE_DEV_SERVER_URL)
         win.webContents.openDevTools()
-    }else {
+    }else { // 生产模式
         win.loadFile(join(__dirname, '../dist/index.html'))
     }
 
