@@ -1,17 +1,20 @@
 #include <napi.h>
 #include <iostream>
 #include <filesystem>
-#include <chrono>  // 用于计时
+#include <chrono>  // 引入chrono库
 
 namespace fs = std::filesystem;
 
-// 递归函数，用于构建文件树
+// 递归创建文件树的函数
 Napi::Object createFileTree(const Napi::Env& env, const fs::path& path) {
     Napi::Object fileTree = Napi::Object::New(env);
 
     if (fs::exists(path) && fs::is_directory(path)) {
         Napi::Array files = Napi::Array::New(env);
         int index = 0;
+
+        // 记录开始时间
+        auto start = std::chrono::high_resolution_clock::now();
 
         try {
             for (const auto& entry : fs::directory_iterator(path)) {
@@ -32,6 +35,13 @@ Napi::Object createFileTree(const Napi::Env& env, const fs::path& path) {
             Napi::TypeError::New(env, e.what()).ThrowAsJavaScriptException();
         }
 
+        // 记录结束时间
+        auto end = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double> elapsed = end - start;
+
+        // 输出花费的时间
+        std::cout << "Time taken to read the file tree (single-threaded): " << elapsed.count() << " seconds" << std::endl;
+
         fileTree.Set("files", files);
     }
 
@@ -47,21 +57,7 @@ Napi::Value GetFileTree(const Napi::CallbackInfo& info) {
     }
 
     std::string directoryPath = info[0].As<Napi::String>();
-
-    // 记录开始时间
-    auto start = std::chrono::high_resolution_clock::now();
-
-    // 创建文件树
-    Napi::Object fileTree = createFileTree(env, fs::path(directoryPath));
-
-    // 记录结束时间
-    auto end = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double> elapsed = end - start;
-
-    // 输出时间
-    std::cout << "Time taken to read the file tree (single-threaded): " << elapsed.count() << " seconds" << std::endl;
-
-    return fileTree;
+    return createFileTree(env, fs::path(directoryPath));
 }
 
 Napi::Object Init(Napi::Env env, Napi::Object exports) {

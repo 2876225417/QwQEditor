@@ -14,7 +14,7 @@ const path = require('path');
 let myAddon;
 if(isDev) {
   console.log(isDev);
-  myAddon = require(path.resolve(__dirname, '../../../../../../src-electron/cppAddons/file_tree.cpp.node'));
+  myAddon = require(path.resolve(__dirname, '../../../../../../src-electron/cppAddons/file_tree_threads.node'));
 }else{
   console.log(isDev);
   myAddon = require(path.join(process.resourcesPath, "build/Release/myaddon.node"));
@@ -50,9 +50,9 @@ export default {
 console.log("This is a test page!");
 
 
-const directoryPath = "C:\\Users\\28762\\Desktop\\vcpkg";
+const directoryPath = "C:\\Program Files";
 const tree = myAddon.getFileTree(directoryPath);
-console.log(tree);
+// console.log(tree);
 
 </script>
 

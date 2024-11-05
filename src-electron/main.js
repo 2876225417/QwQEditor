@@ -145,7 +145,7 @@ const createWindow = () => {
 
                 // 使用经纬度获取天气信息
                 return axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${openWeatherKey}&units=metric`, {
-                    timeout: 10000  // 设置超时时间为 10 秒
+                    timeout: 600000  // 设置超时时间为 10 秒
                 });
             })
             .then(weatherResponse => {

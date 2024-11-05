@@ -4,11 +4,14 @@
 #include <vector>
 #include <thread>
 #include <mutex>
-#include <chrono>  // 用于计时
+#include <chrono>  // 引入chrono库
 
 namespace fs = std::filesystem;
+
+// 用于同步对共享资源的访问
 std::mutex mtx;
 
+// 递归创建文件树的函数声明
 Napi::Object createFileTree(const Napi::Env& env, const fs::path& path);
 
 void processDirectory(const Napi::Env& env, const fs::path& path, Napi::Array& files, int& index) {
@@ -21,8 +24,9 @@ void processDirectory(const Napi::Env& env, const fs::path& path, Napi::Array& f
             if (fs::is_directory(entry.status())) {
                 fileInfo.Set("type", "directory");
 
+                // 创建一个空的子树
                 Napi::Array children = Napi::Array::New(env);
-                std::thread childThread([&env, entry, &children]() {
+                std::thread childThread([env, entry, &children]() {
                     Napi::Object subtree = createFileTree(env, entry.path());
                     std::lock_guard<std::mutex> lock(mtx);
                     children = subtree.Get("files").As<Napi::Array>();
@@ -34,6 +38,7 @@ void processDirectory(const Napi::Env& env, const fs::path& path, Napi::Array& f
                 fileInfo.Set("type", "file");
             }
 
+            // 更新共享资源时使用互斥锁
             std::lock_guard<std::mutex> lock(mtx);
             files.Set(index++, fileInfo);
         }
@@ -49,8 +54,19 @@ Napi::Object createFileTree(const Napi::Env& env, const fs::path& path) {
         Napi::Array files = Napi::Array::New(env);
         int index = 0;
 
+        // 记录开始时间
+        auto start = std::chrono::high_resolution_clock::now();
+
+        // 创建一个线程来处理该目录
         std::thread mainThread(processDirectory, env, path, std::ref(files), std::ref(index));
-        mainThread.join();
+        mainThread.join();  // 等待主线程完成
+
+        // 记录结束时间
+        auto end = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double> elapsed = end - start;
+
+        // 输出花费的时间
+        std::cout << "Time taken to read the file tree: " << elapsed.count() << " seconds" << std::endl;
 
         fileTree.Set("files", files);
     }
@@ -67,21 +83,7 @@ Napi::Value GetFileTree(const Napi::CallbackInfo& info) {
     }
 
     std::string directoryPath = info[0].As<Napi::String>();
-
-    // 记录开始时间
-    auto start = std::chrono::high_resolution_clock::now();
-
-    // 创建文件树
-    Napi::Object fileTree = createFileTree(env, fs::path(directoryPath));
-
-    // 记录结束时间
-    auto end = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double> elapsed = end - start;
-
-    // 输出时间
-    std::cout << "Time taken to read the file tree (multi-threaded): " << elapsed.count() << " seconds" << std::endl;
-
-    return fileTree;
+    return createFileTree(env, fs::path(directoryPath));
 }
 
 Napi::Object Init(Napi::Env env, Napi::Object exports) {
