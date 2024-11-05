@@ -36,13 +36,17 @@
 import { savePdfFile, getPdfFile } from '../indexedDB';
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"; // 确保正确路径
 const { ipcRenderer } = require('electron'); // 引入 ipcRenderer
+const path = require("path");
+const isDev = process.env.NODE_ENV === "development";
 
 export default {
   name: "PdfReader",
   components: {FontAwesomeIcon},
   data() {
     return {
-      pdfViewerSrc: "/pdfjs/web/viewer.html",
+      pdfViewerSrc: isDev
+      ? "/pdfjs/web/viewer.html"
+      : `file://${path.join(process.resourcesPath, "pdfjs/web/viewer.html")}`,
     };
   },
   methods: {

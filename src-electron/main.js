@@ -33,11 +33,10 @@ const createWindow = () => {
         }
     })
 
-    // win.loadURL('http://localhost:3000')
+    // win.webContents.openDevTools() // 测试发行版本
     // development模式
     if(process.env.VITE_DEV_SERVER_URL) {
         win.loadURL(process.env.VITE_DEV_SERVER_URL)
-        // 开启调试台
         win.webContents.openDevTools()
     }else {
         win.loadFile(join(__dirname, '../dist/index.html'))

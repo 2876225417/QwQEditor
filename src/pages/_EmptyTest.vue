@@ -7,8 +7,18 @@
 </template>
 
 <script>
+const isDev = process.env.NODE_ENV === "development";
+
 const path = require('path');
-const myAddon = require(path.resolve(__dirname, '../../../../../../src-electron/cppAddons/myaddon.node'));
+
+let myAddon;
+if(isDev) {
+  console.log(isDev);
+  myAddon = require(path.resolve(__dirname, '../../../../../../src-electron/cppAddons/myaddon.node'));
+}else{
+  console.log(isDev);
+  myAddon = require(path.join(process.resourcesPath, "build/Release/myaddon.node"));
+}
 const axios = require('axios');  // 引入 Axios
 
 export default {

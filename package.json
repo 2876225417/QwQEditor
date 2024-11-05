@@ -1,7 +1,7 @@
 {
   "name": "re-qwq",
   "private": true,
-  "version": "1.0.7",
+  "version": "1.0.8",
   "main": "./src-electron/main.js",
   "scripts": {
     "dev": "vite",
@@ -14,6 +14,24 @@
     "url": "https://github.com/2876225417/QwQEditor.git"
   },
   "build": {
+    "files": [
+      "build/Release/myaddon.node",
+      "src/**/*",
+      "dist/**/*",
+      "main.js",
+      "node_modules/**/*",
+      "src-electron/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "build/Release/myaddon.node",
+        "to": "build/Release/myaddon.node"
+      },
+      {
+        "from": "dist/pdfjs",
+        "to": "pdfjs"
+      }
+    ],
     "productName": "qwqEditor re-Vue",
     "appId": "revue-qwq",
     "copyright": "ppqwqqq © 2024",
@@ -61,6 +79,7 @@
     "@fortawesome/vue-fontawesome": "^3.0.8",
     "@mdi/font": "^7.4.47",
     "axios": "^1.7.7",
+    "canvas": "^3.0.0-rc2",
     "electron-store": "^10.0.0",
     "highlight.js": "^11.10.0",
     "md-editor-v3": "^4.21.2",
@@ -68,15 +87,14 @@
     "node-fetch": "^3.3.2",
     "pdfjs-dist": "^4.7.76",
     "vue": "^3.5.12",
-    "vue-i18n": "^10.0.4",
     "vue-meditor": "^2.1.2",
     "vue-router": "^4.4.5",
-    "vuetify": "^3.7.0-beta.1",
-    "vuex": "^4.1.0"
+    "vuex": "^4.1.0",
+    "yarn": "^1.22.22"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.1.4",
-    "electron": "^33.0.2",
+    "electron": "^33.0.0",
     "electron-builder": "^25.1.8",
     "electron-devtools-installer": "^3.2.0",
     "less": "^4.2.0",
@@ -84,6 +102,8 @@
     "sass-loader": "^16.0.3",
     "stylus": "^0.64.0",
     "vite": "^5.4.9",
-    "vite-plugin-electron": "^0.28.8"
+    "vite-plugin-electron": "^0.28.8",
+    "vue-i18n": "^9.0.0",
+    "vuetify": "^3.7.0"
   }
 }
