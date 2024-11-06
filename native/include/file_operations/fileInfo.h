@@ -7,5 +7,4 @@
 #include <napi.h>
 
 Napi::Value GetFileTreeJSON(const Napi::CallbackInfo& info);
-
 #endif
