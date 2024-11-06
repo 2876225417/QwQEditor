@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
 
-project(EnvInfo)
+project(Modules)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -10,6 +10,7 @@ if(MSVC)
   add_compile_options(/std:c++20 /Zc:__cplusplus)
 endif()
 
+
 file(GLOB SOURCE_FILES "native/sources/*.cc" "native/sources/*.h")
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES} ${CMAKE_JS_SRC})
 
@@ -18,6 +19,8 @@ set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "" SUFFIX ".node")
 # 添加 node-addon-api 的包含路径
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_JS_INC})
 target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/node_modules/node-addon-api")
+target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/native/extLibs")
+
 
 target_link_libraries(${PROJECT_NAME} ${CMAKE_JS_LIB})
 
