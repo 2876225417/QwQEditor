@@ -21,7 +21,7 @@ Napi::Value Draw(const Napi::CallbackInfo& info) {
         return env.Null();
     }
 
-    // 创建一个隐藏的窗口来初始化 OpenGL 上下文
+    // 创建一个隐藏的窗口来初始化 OpenGL 上下文，
     glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);  // 窗口隐藏
     GLFWwindow* window = glfwCreateWindow(800, 600, "Hidden OpenGL Window", NULL, NULL);
     if (!window) {
