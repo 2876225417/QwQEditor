@@ -6,7 +6,7 @@
           :theme="theme"
           permanent
           rail
-          width="300"
+          width="250"
           rounded
       >
         <v-list-item

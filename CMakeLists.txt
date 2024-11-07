@@ -11,6 +11,7 @@ if(MSVC)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MD")
 endif()
 
+
 # 需要编译的文件
 file(GLOB_RECURSE SOURCE_FILES
     "${CMAKE_SOURCE_DIR}/native/sources/*.cc"
@@ -40,6 +41,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/native/i
 target_link_libraries(${PROJECT_NAME} ${CMAKE_JS_LIB})
 link_directories("${CMAKE_SOURCE_DIR}/native/extLibs")
 target_link_libraries(${PROJECT_NAME} "${CMAKE_SOURCE_DIR}/native/extLibs/glfw3dll.lib")
+target_link_libraries(${PROJECT_NAME} "${CMAKE_SOURCE_DIR}/native/extLibs/onnxruntime.lib")
 
 
 # 检查操作系统并链接合适的 OpenGL 和 GLU 库

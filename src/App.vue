@@ -79,7 +79,7 @@ html, body, #app {
 /* 内容区域 */
 .content-container {
   width: 100%;
-  height: calc(100vh - 80px);
+  height: calc(100vh - 87px);
   overflow-y: auto;
   background-color: #f0f0f0;
 }

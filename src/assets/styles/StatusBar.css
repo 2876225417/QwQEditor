@@ -9,19 +9,26 @@
     justify-content: space-between;
     z-index: -1;
     display: flex;
-    background-color: #333;
-    color: white;
+    background-color: #f0f0f0;
+    color: #333;
     padding: 5px 15px;
     font-size: 16px;
     height: 30px;
 }
 
 .StatusBarLeft{
+    margin-left: 5px;
     display: flex;
     align-items: center;
 }
 
 .StatusBarRight{
+    margin-right: 5px;
     display: flex;
     align-items: center;
+}
+
+body.dark-mode .StatusBarContainer{
+    color: #f0f0f0;
+    background: #333;
 }

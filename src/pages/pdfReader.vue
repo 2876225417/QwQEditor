@@ -120,7 +120,7 @@ export default {
 .pdfReader_container {
   display: flex;
   width: 100%;
-  height: calc(100vh - 80px);
+  height: calc(100vh - 87px);
   overflow: hidden;
   padding: 0 !important;
 }

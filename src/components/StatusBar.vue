@@ -2,6 +2,7 @@
 
 
 <template>
+
   <div class="StatusBarContainer">
     <!--左状态栏-->
     <div class="StatusBarLeft">
