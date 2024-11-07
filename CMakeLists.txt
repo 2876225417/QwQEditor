@@ -8,6 +8,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 if(MSVC)
   add_compile_options(/std:c++20 /Zc:__cplusplus)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MD")
 endif()
 
 # 需要编译的文件
@@ -37,6 +38,19 @@ target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/native/i
 
 
 target_link_libraries(${PROJECT_NAME} ${CMAKE_JS_LIB})
+link_directories("${CMAKE_SOURCE_DIR}/native/extLibs")
+target_link_libraries(${PROJECT_NAME} "${CMAKE_SOURCE_DIR}/native/extLibs/glfw3dll.lib")
+
+
+# 检查操作系统并链接合适的 OpenGL 和 GLU 库
+if(WIN32)
+    target_link_libraries(${PROJECT_NAME} opengl32.lib glu32.lib)
+elseif(APPLE)
+    find_library(OpenGL_LIBRARY OpenGL)
+    target_link_libraries(${PROJECT_NAME} ${OpenGL_LIBRARY})
+elseif(UNIX)
+    target_link_libraries(${PROJECT_NAME} GL GLU)
+endif()
 
 
 # 将编译生成的文件(Debug或Release)复制到native/build文件夹中

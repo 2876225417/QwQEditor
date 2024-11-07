@@ -131,8 +131,13 @@
             title="Test"
             value="Test"
             :to="{ path: '/test'}"
+          ></v-list-item>
 
-
+          <v-list-item
+              prepend-icon="mdi-forum"
+              title="OpenGL"
+              value="OpenGL"
+              :to="{ path: '/OpenGL'}"
           ></v-list-item>
 
         </v-list>

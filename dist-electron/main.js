@@ -22,6 +22,7 @@ const createWindow = () => {
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false
+      // webSecurity: false,
     }
   });
   if (process.env.VITE_DEV_SERVER_URL) {
