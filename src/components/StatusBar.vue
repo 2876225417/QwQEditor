@@ -2,6 +2,12 @@
 
 
 <template>
+<div>
+  <v-divider
+      style="position: fixed; bottom: 30px; width: 100%; background-color: #ccc; z-index: 100"
+      :thickness="0"
+      :opacity="0.5"
+  ></v-divider>
 
   <div class="StatusBarContainer">
     <!--左状态栏-->
@@ -13,6 +19,8 @@
       <span id="StatusBarRight-text">{{ StatusBarRightText }}</span>
     </div>
   </div>
+</div>
+
 </template>
 
 <script>

@@ -1,5 +1,8 @@
 <template>
-  <v-container  class="title-bar-wrapper">
+  <v-container
+      :max-width="1800"
+
+      class="title-bar-wrapper">
     <v-row align="center" justify="space-between">
 
 
@@ -101,8 +104,11 @@
         </v-menu>
       </v-col>
     </v-row>
+
   </v-container>
-  <v-divider></v-divider>
+  <v-divider
+
+  ></v-divider>
 </template>
 
 
@@ -184,11 +190,15 @@ export default {
       saveConfig("isDarkMode", this.isDarkMode)
           .then(() => {
             console.log("Configuration save successfully");
+            ipcRenderer.send("toggle-theme", this.isDarkMode);
+
           })
           .catch((error) => {
             console.log("Failed to save configuration:", error);
           });
       this.applyTheme();
+
+      ipcRenderer.send("toggle-theme", this.isDarkMode);
     },
 
     onLanguageChange(event){
@@ -233,12 +243,18 @@ export default {
       this.onLanguageChange();
     },
 
+  },
+  mounted(){
+    ipcRenderer.on("initial-theme", (event, isDarkMode) => {
+      ipcRenderer.send("toggle-theme", this.isDarkMode);
+      this.applyTheme();
+    })
   }
+
 }
 </script>
 
 <style scoped>
-
 
 .title-bar-wrapper{
   padding: 0px;
@@ -271,5 +287,8 @@ export default {
 .window-control-icon{
   font-size: 20px;
 }
+
+
+
 </style>
 

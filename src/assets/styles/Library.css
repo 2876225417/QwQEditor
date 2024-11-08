@@ -1,0 +1,510 @@
+.popup-content ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.popup-content li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.popup-content button {
+    margin-left: 5px;
+    padding: 5px 10px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.popup-content button:hover {
+    background-color: #45a049;
+}
+
+
+
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.popup-content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+}
+
+.popup-content h2 {
+    margin-top: 0;
+}
+
+.popup-content button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.popup-content button:hover {
+    background-color: #45a049;
+}
+
+
+.filter-container {
+    margin-left: 30px;
+    display: flex;
+    align-items: center;
+}
+
+.filter-container label {
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.filter-container select {
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+
+.download-indicator {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #4caf50; /* 默认颜色 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.download-indicator:hover {
+    background-color: #388e3c; /* 悬停颜色 */
+}
+
+#download-status {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.bubble-message {
+    position: fixed;
+    bottom: 100px;
+    right: 20px;
+    background-color: #4caf50;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    font-size: 16px;
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    z-index: 1000;
+}
+
+.bubble-message.fade-out {
+    opacity: 0;
+    transform: translateY(-20px);
+}
+
+
+
+.book-count-container {
+    z-index: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+
+    padding: 20px 20px 20px 20px;
+    background: linear-gradient(135deg, #dfe9f3, #fff);
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    position: relative;
+    width: 100%;
+    max-width: 700px;
+    margin: 30px auto;
+    overflow: hidden;
+    transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+}
+
+
+.book-count-box {
+    background: linear-gradient(135deg, #6c63ff, #536dfe);
+    color: white;
+    padding: 20px 40px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    font-size: 1.8em;
+    position: relative;
+    z-index: 1;
+    transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+}
+
+.book-count-box:before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    bottom: -10px;
+    left: -10px;
+    background: linear-gradient(135deg, #48bb78, #38a169);
+    z-index: -1;
+    border-radius: 20px;
+    opacity: 0.6;
+}
+
+.book-count-box span {
+    font-weight: bold;
+    font-size: 2.5em;
+}
+
+.decorative-text {
+    font-size: 1.2em;
+    color: #4a5568;
+    margin-top: 10px;
+    text-align: center;
+    font-style: italic;
+    animation: fadeIn 2s ease-in-out;
+}
+
+.background-circle {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: rgba(76, 201, 240, 0.2);
+    top: -40px;
+    right: -40px;
+    animation: pulse 6s infinite;
+    transition: background 0.3s;
+}
+
+.icon-circle {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: rgba(255, 183, 77, 0.4);
+    bottom: -30px;
+    left: -30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: pulse 6s infinite;
+    transition: background 0.3s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+
+
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    margin: 0;
+}
+
+h1 {
+    text-align: center;
+}
+
+.category {
+    margin: 20px 0;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.category h2 {
+    margin: 0;
+    padding: 10px;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+}
+
+.book {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.book img {
+    width: 80px;
+    height: 120px;
+    margin-right: 20px;
+}
+
+.book h3 {
+    margin: 0;
+    flex: 1;
+}
+
+.book a {
+    margin-left: 10px;
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.book a:hover {
+    background-color: #0056b3;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.pagination button {
+    margin: 0 10px;
+    padding: 5px 15px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.pagination button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+
+.context-menu {
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.2); /* 半透明背景 */
+    backdrop-filter: blur(10px); /* 毛玻璃模糊效果 */
+    border: 1px solid rgba(255, 255, 255, 0.3); /* 半透明边框 */
+    border-radius: 12px; /* 圆角边框 */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* 更明显的阴影效果 */
+    z-index: 1000;
+    overflow: hidden; /* 确保圆角效果 */
+    transition: all 0.3s ease; /* 平滑过渡效果 */
+}
+
+.context-menu ul {
+    list-style: none;
+    padding: 10px;
+    margin: 0;
+}
+
+.context-menu li {
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 8px; /* 增加圆角 */
+    transition: background-color 0.2s ease; /* 平滑的悬停效果 */
+}
+
+.context-menu li:hover {
+    background-color: rgba(255, 255, 255, 0.3); /* 悬停时的半透明背景 */
+}
+
+
+
+body.dark-mode {
+    background-color: #121212;
+    color: #e0e0e0;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+body.dark-mode .popup-overlay {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+body.dark-mode .popup-content {
+    background: #1e1e1e;
+    color: #e0e0e0;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    transition: background 0.3s, color 0.3s;
+}
+
+body.dark-mode .popup-content button {
+    background-color: #5a9b9e;
+    color: #fff;
+    transition: background-color 0.3s;
+}
+
+body.dark-mode .popup-content button:hover {
+    background-color: #4d8d8e;
+}
+
+body.dark-mode .filter-container label {
+    color: #bbb;
+}
+
+body.dark-mode .filter-container select {
+    background-color: #2a2a2a;
+    color: #e0e0e0;
+    border: 1px solid #444;
+    transition: background-color 0.3s, color 0.3s, border 0.3s;
+}
+
+body.dark-mode .download-indicator {
+    background-color: #5a9b9e;
+    transition: background-color 0.3s;
+}
+
+body.dark-mode .download-indicator:hover {
+    background-color: #4d8d8e;
+}
+
+body.dark-mode #download-status {
+    background-color: #1e1e1e;
+    border: 1px solid #444;
+    color: #e0e0e0;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    transition: background-color 0.3s, border 0.3s, color 0.3s;
+}
+
+body.dark-mode .bubble-message {
+    background-color: #5a9b9e;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+body.dark-mode .book-count-container {
+    background: linear-gradient(135deg, #1e2a38, #2a3b4f);
+    color: #e2e8f0;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+}
+
+body.dark-mode .book-count-box {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: #e2e8f0;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+}
+
+body.dark-mode .book-count-box:before {
+    background: linear-gradient(135deg, #2d6a4f, #1b4332);
+    opacity: 0.8;
+}
+
+body.dark-mode .book-count-box span {
+    color: #e2e8f0;
+}
+
+body.dark-mode .decorative-text {
+    color: #94a3b8;
+}
+
+body.dark-mode .background-circle {
+    background: rgba(76, 201, 240, 0.1);
+    transition: background 0.3s;
+}
+
+body.dark-mode .icon-circle {
+    background: rgba(255, 183, 77, 0.2);
+    transition: background 0.3s;
+}
+
+body.dark-mode .category {
+    background-color: #1e1e1e;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+body.dark-mode .category h2 {
+    background-color: #333;
+    color: #e0e0e0;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+body.dark-mode .book {
+    background-color: #1e1e1e;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+body.dark-mode .book h3 {
+    color: #e0e0e0;
+    transition: color 0.3s;
+}
+
+body.dark-mode .book a {
+    background-color: #5a9b9e;
+    color: #fff;
+    transition: background-color 0.3s;
+}
+
+body.dark-mode .book a:hover {
+    background-color: #4d8d8e;
+}
+
+body.dark-mode .pagination button {
+    background-color: #333;
+    color: #e0e0e0;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+body.dark-mode .pagination button:disabled {
+    opacity: 0.3;
+}
+
+body.dark-mode .context-menu {
+    background-color: #1e1e1e;
+    border: 1px solid #444;
+    color: #e0e0e0;
+    transition: background-color 0.3s, border 0.3s, color 0.3s;
+}
+
+body.dark-mode .context-menu li:hover {
+    background-color: #333;
+    transition: background-color 0.3s;
+}
+
+

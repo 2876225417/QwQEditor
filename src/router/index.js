@@ -11,11 +11,12 @@ import _EmptyTest from "../pages/_EmptyTest.vue";
 import NoteBook from "../components/NoteBook.vue";
 import FileTree from "../pages/FileTree.vue";
 import OpenGL from "../pages/OpenGL.vue";
+import DashBoard from "../pages/DashBoard.vue";
 
 
 const routes = [
-    { path: '/', component: Home },
-    { path: "/home", component: Home },
+    { path: '/', component: DashBoard },
+    { path: "/Dashboard", component: DashBoard },
     { path: "/about", component: About },
     { path: "/service", component: Service },
     { path: "/pdfReader", component: PdfReader },

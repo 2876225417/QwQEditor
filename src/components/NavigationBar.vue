@@ -1,5 +1,7 @@
 <template>
-  <v-card>
+  <v-card
+  style="z-index: 30"
+  >
     <v-layout>
       <v-navigation-drawer
           expand-on-hover
@@ -37,7 +39,9 @@
 
         </v-list-item>
 
-        <v-divider></v-divider>
+        <v-divider
+        :thickness="2"
+        ></v-divider>
 
         <v-list-item
             class="list-icon"
@@ -55,13 +59,21 @@
 
 
 
-        <v-divider></v-divider>
+        <v-divider
+        :thickness="1"
+        ></v-divider>
 
         <v-list
             density="compact"
             nav
         >
-          <v-list-item prepend-icon="mdi-view-dashboard" title="Dashboard" value="dashboard">
+          <v-list-item
+              prepend-icon="mdi-view-dashboard"
+              title="Dashboard"
+              value="Dashboard"
+              :to="{ path: '/Dashboard' }"
+
+          >
           </v-list-item>
 
 
@@ -138,6 +150,13 @@
               title="OpenGL"
               value="OpenGL"
               :to="{ path: '/OpenGL'}"
+          ></v-list-item>
+
+          <v-list-item
+              prepend-icon="mdi-forum"
+              title="OpenGL"
+              value="OpenGL"
+              :to="{ path: '/Library'}"
           ></v-list-item>
 
         </v-list>

@@ -1,34 +1,38 @@
-
-
-
-.StatusBarContainer{
+.StatusBarContainer {
     right: 0;
-    width: calc(100vw - 55px);
+    width: calc(100vw - 0px);
     position: fixed;
     bottom: 0;
     justify-content: space-between;
-    z-index: -1;
     display: flex;
     background-color: #f0f0f0;
     color: #333;
     padding: 5px 15px;
     font-size: 16px;
     height: 30px;
+    z-index: 40; /* 修改为较高的层级 */
 }
 
-.StatusBarLeft{
+/* 确保 divider 与状态栏一起显示 */
+
+
+.StatusBarLeft {
     margin-left: 5px;
     display: flex;
     align-items: center;
 }
 
-.StatusBarRight{
+.StatusBarRight {
     margin-right: 5px;
     display: flex;
     align-items: center;
 }
 
-body.dark-mode .StatusBarContainer{
+body.dark-mode .StatusBarContainer {
     color: #f0f0f0;
     background: #333;
+}
+
+body.dark-mode .v-divider {
+    background-color: #555; /* dark mode 下的分隔线颜色 */
 }

@@ -130,4 +130,6 @@ export default {
   height: 100%;
   border: none;
 }
+
+
 </style>

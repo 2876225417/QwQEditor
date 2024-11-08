@@ -223,13 +223,16 @@ const createWindow = () => {
 
 
 
-
-
     // 进入应用后初始化应用主题
     win.webContents.on("did-finish-load", () => {
         const isDarkMode = nativeTheme.shouldUseDarkColors;
         win.webContents.send("initial-theme", isDarkMode);
     });
+
+    ipcMain.on("toggle-theme", (event, isDarkMode) => {
+        nativeTheme.themeSource = isDarkMode ? "dark" : "light";
+        event.reply("theme-updated", nativeTheme.shouldUseDarkColors);
+    })
 
 
 

@@ -9,6 +9,7 @@
 #include <thread>
 #include <mutex>
 #include <condition_variable>
+#include <random>
 #include "OpenGL/draw.h"
 
 // 全局变量
@@ -22,7 +23,32 @@ std::mutex renderMutex;
 std::condition_variable renderCondition;
 std::vector<unsigned char> frameBufferData(4 * 800 * 600); // 保存帧数据
 bool frameReady = false;
+static float M_PI = 3.14159;
 
+
+// 定义雨滴结构
+struct Raindrop {
+    float x, y;        // 雨滴位置
+    float speed;       // 雨滴速度
+};
+
+std::vector<Raindrop> raindrops;
+
+// 初始化雨滴
+void InitializeRaindrops(int count) {
+    raindrops.clear();
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<float> xDist(-1.0f, 1.0f);
+    std::uniform_real_distribution<float> yDist(0.5f, 1.5f);
+    std::uniform_real_distribution<float> speedDist(0.01f, 0.03f);
+
+    for (int i = 0; i < count; ++i) {
+        raindrops.push_back({ xDist(gen), yDist(gen), speedDist(gen) });
+    }
+}
+
+// 初始化帧缓冲对象 (FBO)
 void InitializeFBO(int width, int height) {
     glGenFramebuffers(1, &fbo);
     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
@@ -40,6 +66,28 @@ void InitializeFBO(int width, int height) {
     }
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+// 绘制月亮效果
+void DrawMoon() {
+    // 设置月亮的位置和半径
+    float moonX = -0.8f;
+    float moonY = 0.8f;
+    float maxRadius = 0.15f;
+
+    // 绘制多个半径的同心圆，以模拟月亮的光晕
+    glBegin(GL_TRIANGLE_FAN);
+    for (float radius = maxRadius; radius > 0.01f; radius -= 0.02f) {
+        float alpha = (radius / maxRadius) * 0.5f;  // 根据半径调整透明度
+        glColor4f(1.0f, 1.0f, 0.9f, alpha); // 淡白色，透明度渐变
+
+        // 绘制圆形的顶点
+        for (int angle = 0; angle <= 360; angle += 10) {
+            float rad = angle * M_PI / 180.0f;
+            glVertex2f(moonX + cos(rad) * radius, moonY + sin(rad) * radius);
+        }
+    }
+    glEnd();
 }
 
 void RenderLoop() {
@@ -64,6 +112,9 @@ void RenderLoop() {
         InitializeFBO(width, height);
     }
 
+    // 初始化雨滴数量
+    InitializeRaindrops(100);  // 生成 100 个雨滴
+
     while (true) {
         std::unique_lock<std::mutex> lock(renderMutex);
         renderCondition.wait(lock, []{ return !frameReady || stopRendering; });
@@ -75,19 +126,45 @@ void RenderLoop() {
         glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        // 绘制月亮
+        DrawMoon();
+
+        // 动态更新旋转角度
         rotationAngle += 1.0f;
+
+        // 动态生成颜色
+        float red = (sin(rotationAngle * 0.1f) + 1.0f) / 2.0f;
+        float green = (sin(rotationAngle * 0.2f + 1.0f) + 1.0f) / 2.0f;
+        float blue = (sin(rotationAngle * 0.3f + 2.0f) + 1.0f) / 2.0f;
+
         glPushMatrix();
         glRotatef(rotationAngle, 0.0f, 0.0f, 1.0f);
 
+        // 绘制三角形，并动态设置颜色
         glBegin(GL_TRIANGLES);
-        glColor3f(1.0f, 0.0f, 0.0f); glVertex2f(-0.5f, -0.5f);
-        glColor3f(0.0f, 1.0f, 0.0f); glVertex2f(0.5f, -0.5f);
-        glColor3f(0.0f, 0.0f, 1.0f); glVertex2f(0.0f, 0.5f);
+        glColor3f(red, 0.0f, 1.0f - red); glVertex2f(-0.5f, -0.5f);
+        glColor3f(0.0f, green, 1.0f - green); glVertex2f(0.5f, -0.5f);
+        glColor3f(blue, 0.0f, 1.0f - blue); glVertex2f(0.0f, 0.5f);
         glEnd();
 
         glPopMatrix();
+
+        // 更新并绘制雨滴
+        glBegin(GL_LINES);
+        glColor3f(0.5f, 0.5f, 1.0f); // 雨滴颜色
+        for (auto& drop : raindrops) {
+            glVertex3f(drop.x, drop.y, -1.0f);             // 雨滴起点
+            glVertex3f(drop.x, drop.y - 0.1f, -1.0f);      // 雨滴终点
+            drop.y -= drop.speed;
+            if (drop.y < -1.0f) {
+                drop.y = 1.0f;
+            }
+        }
+        glEnd();
+
         glFlush();
 
+        // 读取帧缓冲数据
         glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, frameBufferData.data());
 
         frameReady = true;

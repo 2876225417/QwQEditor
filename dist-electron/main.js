@@ -172,6 +172,10 @@ const createWindow = () => {
     const isDarkMode = nativeTheme.shouldUseDarkColors;
     win.webContents.send("initial-theme", isDarkMode);
   });
+  ipcMain.on("toggle-theme", (event, isDarkMode) => {
+    nativeTheme.themeSource = isDarkMode ? "dark" : "light";
+    event.reply("theme-updated", nativeTheme.shouldUseDarkColors);
+  });
 };
 app.whenReady().then(() => {
   createWindow();

@@ -15,6 +15,72 @@
     html{
         overflow: hidden;
     }
+
+    /* 默认模式滚动条样式 */
+    ::-webkit-scrollbar {
+        width: 8px;           /* 设置滚动条宽度 */
+        height: 8px;          /* 如果是水平滚动条 */
+        transition: background-color 0.3s ease; /* 过渡动画 */
+    }
+
+    /* 滚动条滑块 */
+    ::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg, #d1d1d1, #b0b0b0); /* 柔和的灰色渐变 */
+        border-radius: 10px;                                   /* 更大的圆角 */
+        box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.2);     /* 内部阴影，增加质感 */
+        transition: background-color 0.3s ease, box-shadow 0.3s ease; /* 添加过渡动画 */
+    }
+
+    /* 鼠标悬停在滑块上时 */
+    ::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(180deg, #c0c0c0, #999); /* 悬停时略微变暗 */
+        box-shadow: inset 1px 1px 4px rgba(0, 0, 0, 0.3);   /* 增强阴影效果 */
+    }
+
+    /* 滚动条轨道 */
+    ::-webkit-scrollbar-track {
+        background: #f3f3f3;       /* 滚动条轨道浅灰色 */
+        border-radius: 10px;       /* 更大的轨道圆角 */
+        transition: background-color 0.3s ease; /* 轨道颜色切换动画 */
+    }
+
+    /* 深色模式滚动条样式 */
+    body.dark-mode ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    /* 深色模式滚动条滑块 */
+    body.dark-mode ::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg, #505050, #3a3a3a); /* 深色模式下柔和的深灰色 */
+        border-radius: 10px;
+        box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.6); /* 更深的内部阴影 */
+        border: 1px solid #444;                           /* 深色边框 */
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    /* 鼠标悬停时的滑块 */
+    body.dark-mode ::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(180deg, #686868, #505050); /* 悬停时变亮 */
+        box-shadow: inset 1px 1px 5px rgba(0, 0, 0, 0.8); /* 强化阴影 */
+    }
+
+    /* 深色模式滚动条轨道 */
+    body.dark-mode ::-webkit-scrollbar-track {
+        background: #2b2b2b;          /* 深色轨道颜色 */
+        border-radius: 10px;
+        transition: background-color 0.3s ease; /* 平滑的过渡动画 */
+    }
+
+    /* 隐藏滚动条的起点和终点按钮 */
+    ::-webkit-scrollbar-button,
+    body.dark-mode ::-webkit-scrollbar-button {
+        display: none;
+    }
+
+
+
+
 </style>
 
 
