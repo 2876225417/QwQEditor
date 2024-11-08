@@ -16,9 +16,9 @@ const { ipcRenderer } = require('electron');
 
 let myAddon;
 if (isDev) {
-  myAddon = require(path.resolve(__dirname, '../../../../../../src-electron/cppAddons/file_treev1.node'));
+  // myAddon = require(path.resolve(__dirname, '../../../../../../src-electron/cppAddons/file_treev1.node'));
 } else {
-  myAddon = require(path.join(process.resourcesPath, "build/Release/myaddon.node"));
+  // myAddon = require(path.join(process.resourcesPath, "build/Release/myaddon.node"));
 }
 
 export default {
@@ -47,7 +47,8 @@ export default {
     async getFileTree(directoryPath) {
       try {
         // 调用 C++ 异步接口获取文件树
-        const tree = await myAddon.getFileTree(directoryPath);
+        // const tree = await myAddon.getFileTree(directoryPath);
+        const tree = null;
         this.fileTree = tree;
         this.message = "File tree loaded successfully.";
       } catch (error) {

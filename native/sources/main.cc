@@ -4,7 +4,8 @@
 #include "env/envInfo.h"
 #include "file_operations/fileInfo.h"
 #include "file_operations/file_crud.h"
-#include "draw.h"
+#include "OpenGL/draw.h"
+
 
 
 Napi::Object Init(Napi::Env env, Napi::Object exports){

@@ -8,6 +8,7 @@
 #include <napi.h>
 #include <vector>
 #include <cmath>
+#include "OpenGL/draw.h"
 
 // 全局变量，用于存储旋转角度
 static float rotationAngle = 0.0f;
