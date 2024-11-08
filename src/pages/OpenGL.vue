@@ -2,6 +2,7 @@
   <div>
     <canvas ref="canvas" :width="800" :height="600"></canvas>
     <button @click="startRotation">Start Rotation</button>
+    <button @click="stopRotation">Stop Rotation</button>
   </div>
 </template>
 
@@ -13,14 +14,21 @@ export default {
   name: "OpenGLCanvas",
   data() {
     return {
-      animationFrameId: null
+      animationFrameId: null,
+      isRendering: false,
     };
   },
   methods: {
     startRotation() {
-      // 开始旋转的动画循环
+      if (this.isRendering) return;  // 防止多次启动渲染
+
+      // 启动后台渲染线程
+      drawModule.startRenderLoop();
+      this.isRendering = true;
+
+      // 开始动画循环
       const render = () => {
-        const frameData = drawModule.draw();
+        const frameData = drawModule.getFrame();
         const canvas = this.$refs.canvas;
         const ctx = canvas.getContext("2d");
 
@@ -42,11 +50,16 @@ export default {
         this.animationFrameId = requestAnimationFrame(render);
       };
 
-      // 启动渲染循环
       render();
     },
     stopRotation() {
-      // 停止动画
+      if (this.isRendering) {
+        // 停止后台渲染线程
+        drawModule.stopRenderLoop();
+        this.isRendering = false;
+      }
+
+      // 停止动画循环
       if (this.animationFrameId) {
         cancelAnimationFrame(this.animationFrameId);
         this.animationFrameId = null;
@@ -54,7 +67,7 @@ export default {
     }
   },
   beforeDestroy() {
-    // 清理动画帧
+    // 清理资源
     this.stopRotation();
   }
 };

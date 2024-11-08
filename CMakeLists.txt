@@ -42,6 +42,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/native/i
 target_link_libraries(${PROJECT_NAME} ${CMAKE_JS_LIB})
 link_directories("${CMAKE_SOURCE_DIR}/native/extLibs")
 target_link_libraries(${PROJECT_NAME} "${CMAKE_SOURCE_DIR}/native/extLibs/glfw3dll.lib")
+target_link_libraries(${PROJECT_NAME} "${CMAKE_SOURCE_DIR}/native/extLibs/glew32.lib")
 
 
 # 检查操作系统并链接合适的 OpenGL 和 GLU 库

@@ -1,79 +1,143 @@
-// draw.cc
 #define WIN32_LEAN_AND_MEAN
 #define NOGDI
 #include <windows.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <napi.h>
 #include <vector>
 #include <cmath>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
 #include "OpenGL/draw.h"
 
-// 全局变量，用于存储旋转角度
+// 全局变量
 static float rotationAngle = 0.0f;
+static GLuint fbo = 0;
+static GLuint texture = 0;
+static bool initialized = false;
+static bool stopRendering = false;
+std::thread renderThread;
+std::mutex renderMutex;
+std::condition_variable renderCondition;
+std::vector<unsigned char> frameBufferData(4 * 800 * 600); // 保存帧数据
+bool frameReady = false;
 
-Napi::Value Draw(const Napi::CallbackInfo& info) {
-    Napi::Env env = info.Env();
+void InitializeFBO(int width, int height) {
+    glGenFramebuffers(1, &fbo);
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
-    // 初始化 GLFW
-    if (!glfwInit()) {
-        Napi::TypeError::New(env, "Failed to initialize GLFW").ThrowAsJavaScriptException();
-        return env.Null();
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
+
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+        fprintf(stderr, "Failed to create framebuffer\n");
     }
 
-    // 创建一个隐藏的窗口来初始化 OpenGL 上下文，
-    glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);  // 窗口隐藏
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void RenderLoop() {
+    if (!glfwInit()) return;
+
+    glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
     GLFWwindow* window = glfwCreateWindow(800, 600, "Hidden OpenGL Window", NULL, NULL);
     if (!window) {
         glfwTerminate();
-        Napi::TypeError::New(env, "Failed to create GLFW window").ThrowAsJavaScriptException();
-        return env.Null();
+        return;
     }
 
-    // 绑定 OpenGL 上下文到当前线程
     glfwMakeContextCurrent(window);
 
-    // 设置 OpenGL 绘制区域
-    const int width = 800;
-    const int height = 600;
-    glViewport(0, 0, width, height);
+    if (glewInit() != GLEW_OK) {
+        glfwTerminate();
+        return;
+    }
 
-    // 设置背景颜色
-    glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    int width = 800, height = 600;
+    if (fbo == 0) {
+        InitializeFBO(width, height);
+    }
 
-    // 更新旋转角度
-    rotationAngle += 1.0f; // 每次调用增加 1 度，调整速度可以改变旋转速度
+    while (true) {
+        std::unique_lock<std::mutex> lock(renderMutex);
+        renderCondition.wait(lock, []{ return !frameReady || stopRendering; });
 
-    // 应用旋转
-    glPushMatrix();
-    glRotatef(rotationAngle, 0.0f, 0.0f, 1.0f); // 绕 z 轴旋转
+        if (stopRendering) break;
 
-    // 绘制一个彩色三角形
-    glBegin(GL_TRIANGLES);
-    glColor3f(1.0f, 0.0f, 0.0f); glVertex2f(-0.5f, -0.5f);
-    glColor3f(0.0f, 1.0f, 0.0f); glVertex2f(0.5f, -0.5f);
-    glColor3f(0.0f, 0.0f, 1.0f); glVertex2f(0.0f, 0.5f);
-    glEnd();
+        glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+        glViewport(0, 0, width, height);
+        glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glPopMatrix(); // 恢复矩阵
+        rotationAngle += 1.0f;
+        glPushMatrix();
+        glRotatef(rotationAngle, 0.0f, 0.0f, 1.0f);
 
-    // 刷新缓冲区，确保所有 OpenGL 绘制指令执行完成
-    glFlush();
+        glBegin(GL_TRIANGLES);
+        glColor3f(1.0f, 0.0f, 0.0f); glVertex2f(-0.5f, -0.5f);
+        glColor3f(0.0f, 1.0f, 0.0f); glVertex2f(0.5f, -0.5f);
+        glColor3f(0.0f, 0.0f, 1.0f); glVertex2f(0.0f, 0.5f);
+        glEnd();
 
-    // 使用 glReadPixels 获取帧缓冲区数据
-    std::vector<unsigned char> pixels(4 * width * height); // RGBA 格式
-    glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, pixels.data());
+        glPopMatrix();
+        glFlush();
 
-    // 关闭窗口并终止 GLFW
+        glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, frameBufferData.data());
+
+        frameReady = true;
+        lock.unlock();
+        renderCondition.notify_one();
+    }
+
     glfwDestroyWindow(window);
     glfwTerminate();
+}
 
-    // 将像素数据返回给 JavaScript，作为 Uint8Array
-    Napi::Buffer<unsigned char> buffer = Napi::Buffer<unsigned char>::Copy(env, pixels.data(), pixels.size());
+Napi::Value StartRenderLoop(const Napi::CallbackInfo& info) {
+    if (initialized) {
+        Napi::TypeError::New(info.Env(), "Render loop already started").ThrowAsJavaScriptException();
+        return info.Env().Null();
+    }
+
+    stopRendering = false;
+    renderThread = std::thread(RenderLoop);
+    initialized = true;
+
+    return info.Env().Undefined();
+}
+
+Napi::Value GetFrame(const Napi::CallbackInfo& info) {
+    std::unique_lock<std::mutex> lock(renderMutex);
+    renderCondition.wait(lock, []{ return frameReady; });
+
+    Napi::Buffer<unsigned char> buffer = Napi::Buffer<unsigned char>::Copy(info.Env(), frameBufferData.data(), frameBufferData.size());
+    frameReady = false;
+    lock.unlock();
+    renderCondition.notify_one();
+
     return buffer;
 }
 
+Napi::Value StopRenderLoop(const Napi::CallbackInfo& info) {
+    if (!initialized) {
+        Napi::TypeError::New(info.Env(), "Render loop not started").ThrowAsJavaScriptException();
+        return info.Env().Null();
+    }
 
+    {
+        std::lock_guard<std::mutex> lock(renderMutex);
+        stopRendering = true;
+    }
+    renderCondition.notify_one();
+    renderThread.join();
+
+    initialized = false;
+    return info.Env().Undefined();
+}
 
